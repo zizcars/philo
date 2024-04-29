@@ -1,23 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   pholi.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/04/29 12:35:09 by Achakkaf         ###   ########.fr       */
+/*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
+/*   Updated: 2024/04/29 12:31:25 by Achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pholi.h"
+#ifndef PHOLI_H
+# define PHOLI_H
 
-int main()
-{
-    struct timeval time1;
-    struct timeval time2;
-    gettimeofday(&time1, NULL);
-    usleep(1000000);
-    gettimeofday(&time2, NULL);
-    printf("TIME:%d\n",time2.tv_sec - time1.tv_sec);
-}
+#include <pthread.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <sys/time.h>
+#endif
