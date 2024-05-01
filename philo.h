@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pholi.h                                            :+:      :+:    :+:   */
+/*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/01 12:37:29 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/01 16:47:28 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHOLI_H
-# define PHOLI_H
+#ifndef PHILO_H
+# define PHILO_H
 
 #include <pthread.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/time.h>
-
+#include <stdlib.h>
 /// @brief take a number and error status
 typedef struct s_number
 {

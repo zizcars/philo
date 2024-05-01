@@ -6,11 +6,11 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/01 12:37:49 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/01 14:57:37 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pholi.h"
+#include "philo.h"
 
 int set_default(t_philo_info *philo_info, int ac, char **av)
 {

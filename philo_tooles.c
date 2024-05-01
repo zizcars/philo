@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pholi_tooles.c                                     :+:      :+:    :+:   */
+/*   philo_tooles.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 11:36:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/01 12:37:22 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/01 14:58:29 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pholi.h"
+#include "philo.h"
 
 void skip_space(char **str)
 {
@@ -44,5 +44,12 @@ t_number convert_int(char *str)
 		n_info.error = 1;
 		return (n_info);
 	}
+	if (n_info.number == 0)
+		n_info.error = 1;
 	return (n_info);
 }
+
+// int check_invalid(t_philo_info *philo_info)
+// {
+	
+// }
