@@ -1,7 +1,8 @@
 CFLAGS = -Wall -Wextra -Werror
 NAME = philo
 SRC =	main.c \
-		philo_tooles.c
+		philo_tooles.c \
+		create_table.c
 
 OSRC=$(SRC:.c=.o)
 
