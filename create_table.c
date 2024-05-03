@@ -6,50 +6,52 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/02 16:09:44 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/03 16:20:59 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int set_default(t_philo_info *philo_info, int ac, char **av)
+int set_default(t_info *philo_info, int ac, char **av)
 {
 	philo_info->total_ph = convert_int(av[1]);
-	if (philo_info->total_ph.error)
+	if (philo_info->total_ph == -1)
 		return (1);
 	philo_info->t_die = convert_int(av[2]);
-	if (philo_info->t_die.error)
-		return (2);
+	if (philo_info->t_die == -1)
+		return (1);
 	philo_info->t_eat = convert_int(av[3]);
-	if (philo_info->t_eat.error)
-		return (3);
+	if (philo_info->t_eat == -1)
+		return (1);
 	philo_info->t_sleep = convert_int(av[4]);
-	if (philo_info->t_sleep.error)
-		return (4);
+	if (philo_info->t_sleep == -1)
+		return (1);
 	if (ac == 6)
-		philo_info->n_t_m_eat = convert_int(av[5]);
-	else
 	{
-		philo_info->n_t_m_eat.number = -1;
-		philo_info->n_t_m_eat.error = 0;
+		philo_info->n_t_m_eat = convert_int(av[5]);
+		if (philo_info->n_t_m_eat == -1)
+			return (1);
 	}
+	else
+		philo_info->n_t_m_eat = 0;
 	return (0);
 }
 
-t_philo *create_philo(t_philo_info philo_info, int i)
+t_philo *create_philo(t_info philo_info, int i)
 {
 	t_philo *philo;
 
 	philo = malloc(sizeof(t_philo));
 	philo->n_ph = i;
 	philo->n_fork = 1;
+	philo->state = THINKING;
 	philo->philo_info = philo_info;
 	philo->next = NULL;
 	// philo->previous = NULL;
 	return (philo);
 }
 
-t_philo *create_table(t_philo_info philo_info)
+t_philo *create_table(t_info philo_info)
 {
 	int i;
 	t_philo *tmp;
@@ -58,7 +60,7 @@ t_philo *create_table(t_philo_info philo_info)
 	int one_time;
 
 	one_time = 1;
-	i = philo_info.total_ph.number;
+	i = philo_info.total_ph;
 	table = NULL;
 	while (i)
 	{
@@ -70,7 +72,7 @@ t_philo *create_table(t_philo_info philo_info)
 			first = table;
 		}
 		table->next = tmp;
-		i--;		
+		i--;
 	}
 	first->next = table;
 	return (table);
@@ -78,9 +80,9 @@ t_philo *create_table(t_philo_info philo_info)
 
 void free_all(t_philo *table)
 {
-	int check ;
+	int check;
 	t_philo *tmp;
-	
+
 	check = table->n_ph;
 	table = table->next;
 	while (table->n_ph != check)
