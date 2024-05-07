@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/03 16:20:59 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/07 15:40:56 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,17 @@ int set_default(t_info *philo_info, int ac, char **av)
 	return (0);
 }
 
-t_philo *create_philo(t_info philo_info, int i)
+t_philo *create_philo(t_info philo_info, int philo_n)
 {
 	t_philo *philo;
 
 	philo = malloc(sizeof(t_philo));
-	philo->n_ph = i;
+	if (pthread_mutex_init(&philo->lock, NULL))
+		return (NULL);
+	philo->n_ph = philo_n;
 	philo->n_fork = 1;
 	philo->state = THINKING;
 	philo->philo_info = philo_info;
-	philo->next = NULL;
-	// philo->previous = NULL;
 	return (philo);
 }
 
@@ -57,25 +57,26 @@ t_philo *create_table(t_info philo_info)
 	t_philo *tmp;
 	t_philo *first;
 	t_philo *table;
-	int one_time;
 
-	one_time = 1;
-	i = philo_info.total_ph;
-	table = NULL;
-	while (i)
+	i = 1;
+	table = create_philo(philo_info, i++);
+	first = table;
+	while (i <= philo_info.total_ph)
 	{
 		tmp = table;
 		table = create_philo(philo_info, i);
-		if (one_time)
+		if (table == NULL)
 		{
-			one_time = 0;
-			first = table;
+			free_all(first);
+			return (NULL);
 		}
-		table->next = tmp;
-		i--;
+		tmp->next = table;
+		table->previous = tmp;
+		i++;
 	}
-	first->next = table;
-	return (table);
+	table->next = first;
+	first->previous = table;
+	return (first);
 }
 
 void free_all(t_philo *table)

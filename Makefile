@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -pthread #-fsanitize=thread -g
 NAME = philo
 SRC =	main.c \
 		philo_tooles.c \
@@ -19,3 +19,5 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+.PHONY: clean
