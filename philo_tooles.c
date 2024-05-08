@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 11:36:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/03 15:35:41 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/08 16:57:15 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ void skip_space(char **str)
 		(*str)++;
 }
 
-long convert_int(char *str)
+int convert_int(char *str)
 {
-	long	number;
+	int	number;
 
 	number = 0;
 	skip_space(&str);
@@ -38,7 +38,7 @@ long convert_int(char *str)
 	skip_space(&str);
 	if (*str != '\0')
 		return (-1);
-	if (number == 0)
+	if (number < 2)
 		return (-1);
 	return (number);
 }
