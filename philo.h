@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/08 17:10:22 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/08 20:16:51 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,18 @@ typedef enum s_state
 typedef struct s_philo
 {
 	int id;
+	// pthread_t *threads;
+	// int i;
+	int stop;
 	t_state state;
 	int total_ph;
 	int t_die;
 	int t_eat;
 	int t_sleep;
 	int n_t_m_eat;
+	struct timeval start_t;
+	struct timeval end_t;
+	struct timeval tmp;
 	pthread_mutex_t l_fork;
 	pthread_mutex_t r_fork;
 	struct s_philo *next;

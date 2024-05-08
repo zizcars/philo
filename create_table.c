@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/08 16:59:49 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/08 19:42:51 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ t_philo *create_philo(int id)
 		return (NULL);
 	philo->id = id;
 	philo->state = THINKING;
+	philo->stop = 1;
 	return (philo);
 }
 
