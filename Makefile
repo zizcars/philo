@@ -3,7 +3,7 @@ NAME = philo
 SRC =	main.c \
 		philo_tooles.c \
 		create_table.c \
-		# manage_forks.c
+		manage_forks.c
 
 OSRC=$(SRC:.c=.o)
 
