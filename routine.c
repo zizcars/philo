@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 14:27:46 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/09 17:54:53 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/09 20:46:45 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,16 @@ int eating(t_philo *philo, struct timeval start)
 	// if the number of philosophers equale 1
 	printf("%d %d has taken a fork\n", get_time(start), philo->id);
 	printf("%d %d is eating\n", get_time(start), philo->id);
-	// int check = ft_sleep(philo, philo->t_eat);
-	// if (check == DIED)
-	// {
-	// 	gettimeofday(&philo->start_t, NULL);
-	// 	pthread_mutex_unlock(&philo->r_fork);
-	// 	pthread_mutex_unlock(&philo->l_fork);
-	// 	pthread_mutex_unlock(&philo->next->l_fork);
-	// 	return (DIED);
-	// }
-	usleep(philo->t_sleep * 1000);
+	int check = ft_sleep(philo, philo->t_eat);
+	if (check == DIED)
+	{
+		// gettimeofday(&philo->start_t, NULL);
+		pthread_mutex_unlock(&philo->r_fork);
+		pthread_mutex_unlock(&philo->l_fork);
+		pthread_mutex_unlock(&philo->next->l_fork);
+		return (DIED);
+	}
+	// usleep(philo->t_sleep * 1000);
 	// gettimeofday(&philo->start_t, NULL);
 	pthread_mutex_unlock(&philo->r_fork);
 	pthread_mutex_unlock(&philo->l_fork);
