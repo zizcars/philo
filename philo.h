@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/08 20:16:51 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/09 17:03:46 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,24 @@
 #include <sys/time.h>
 #include <stdlib.h>
 
-typedef enum s_state
-{
-	THINKING = 1,
-	EATING = 2,
-	SLEEPING = 3,
-} t_state; 
+#define DIED -1
+#define LIFE 0
+// typedef enum s_state
+// {
+// 	THINKING = 1,
+// 	EATING = 2,
+// 	SLEEPING = 3,
+// } t_state; 
 
 /// @brief take all info about philosophers
 typedef struct s_philo
 {
 	int id;
-	// pthread_t *threads;
-	// int i;
+	pthread_mutex_t print_mutex;
+	int print_message;
 	int stop;
-	t_state state;
+	pthread_mutex_t mutex_lock;
+	// t_state state;
 	int total_ph;
 	int t_die;
 	int t_eat;
@@ -41,11 +44,11 @@ typedef struct s_philo
 	int n_t_m_eat;
 	struct timeval start_t;
 	struct timeval end_t;
-	struct timeval tmp;
+	struct timeval start;
 	pthread_mutex_t l_fork;
 	pthread_mutex_t r_fork;
 	struct s_philo *next;
-	struct s_philo *previous;
+	// struct s_philo *previous;
 } t_philo;
 
 /// @brief convert from char * to a number and if the number is invalid set error variable to 1
@@ -81,4 +84,14 @@ void free_all(t_philo *table);
 /// @return state of the function 0 ok -1 error
 int create_threads(t_philo *philo);
 
+
+int get_time(struct timeval start_t);
+int eating(t_philo *philo, struct timeval start);
+// int check_died(t_philo *philo);
+void *philosopher(void *arg);
+int create_threads(t_philo *philo);
+
+
+int ft_sleep(t_philo *philo, int time_us);
+int died(t_philo *philo);
 #endif

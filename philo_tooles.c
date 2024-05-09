@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 11:36:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/08 16:57:15 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/09 14:31:16 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int convert_int(char *str)
 	skip_space(&str);
 	if (*str != '\0')
 		return (-1);
-	if (number < 2)
+	if (number == 0)
 		return (-1);
 	return (number);
 }

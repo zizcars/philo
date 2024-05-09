@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/08 19:02:00 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/09 12:01:55 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void leaks()
 {
-	system("leaks philo");	
+	system("leaks philo");
 }
 
 int main(int ac, char **av)
@@ -29,7 +29,7 @@ int main(int ac, char **av)
 	}
 	// if (set_default(&philo, ac, av))
 	// {
-	// 	
+	//
 	// }
 	if ((philo = create_table(ac, av)) == NULL)
 	{
@@ -46,7 +46,7 @@ int main(int ac, char **av)
 	// 	i++;
 	// }
 	create_threads(philo);
+	
 	// printf("%d\t%d\n", philo->state, philo->n_ph);
 	free_all(philo);
 }
-

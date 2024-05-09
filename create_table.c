@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/08 19:42:51 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/09 17:04:17 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ int set_default(t_philo *philo, int ac, char **av)
 	}
 	else
 		philo->n_t_m_eat = 0;
+	// if (philo->t_die <  philo->t_eat)
+	// 	return (2);
 	return (0);
 }
 
@@ -42,11 +44,13 @@ t_philo *create_philo(int id)
 	t_philo *philo;
 
 	philo = malloc(sizeof(t_philo));
-	if (pthread_mutex_init(&philo->l_fork, NULL) || pthread_mutex_init(&philo->r_fork, NULL))
+	if (pthread_mutex_init(&philo->l_fork, NULL) || pthread_mutex_init(&philo->r_fork, NULL) || pthread_mutex_init(&philo->mutex_lock, NULL) )
 		return (NULL);
+	pthread_mutex_init(&philo->print_mutex, NULL);
 	philo->id = id;
-	philo->state = THINKING;
-	philo->stop = 1;
+	// philo->state = THINKING;
+	philo->stop = LIFE;
+	philo->print_message = 1;
 	return (philo);
 }
 
@@ -72,11 +76,11 @@ t_philo *create_table(int ac, char **av)
 			return (NULL);
 		}
 		tmp->next = philo;
-		philo->previous = tmp;
+		// philo->previous = tmp;
 		id++;
 	}
 	philo->next = first;
-	first->previous = philo;
+	// first->previous = philo;
 	return (first);
 }
 
