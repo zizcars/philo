@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/10 13:03:17 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/10 15:02:32 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,52 +17,30 @@
 /// @return time from start in ms
 int get_time(struct timeval start_t)
 {
-	// int time;
 	struct timeval end_t;
 
 	if (gettimeofday(&end_t, NULL))
 		return (-1);
-	// time = (end_t.tv_sec - start_t.tv_sec) * 1000 + (end_t.tv_usec - start_t.tv_usec) / 1000;
 	return ((end_t.tv_sec - start_t.tv_sec) * 1000 + (end_t.tv_usec - start_t.tv_usec) / 1000);
 }
 
-/// @brief sleep and check if there is an error 
-/// @param philo 
-/// @param time_us 
-/// @return 
-// int	ft_sleep(t_philo *philo, int time_us)
-// {
-// 	// (void )philo;
-// 	time_us *= 1000;
-// 	while (time_us > 0)
-// 	{
-// 		usleep(1000);
-// 		if (died(philo) == DIED)
-// 			return (DIED);
-// 		time_us -= 1000;
-// 	}
-// 	// usleep(time_us * 1000);
-// 	return (LIFE);
-// }
-
 int ft_sleep(t_philo *philo, int time_ms)
 {
-    struct timeval start, end;
-    long elapsed;
+	struct timeval start, end;
+	long elapsed;
 
-    time_ms *= 1000;
-    while (time_ms > 0)
-    {
+	time_ms *= 1000;
+	while (time_ms > 0)
+	{
    		gettimeofday(&start, NULL);
-        usleep(100);
-        if (died(philo) == DIED)
-            return (DIED);
-        gettimeofday(&end, NULL);
-        elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
-        time_ms -= elapsed;
-        // time_ms -= get_time(start);
-    }
-    return (LIFE);
+		usleep(100);
+		if (died(philo) == DIED)
+			return (DIED);
+		gettimeofday(&end, NULL);
+		elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
+		time_ms -= elapsed;
+	}
+	return (LIFE);
 }
 
 void *philosopher(void *arg)
@@ -92,25 +70,6 @@ void *philosopher(void *arg)
 	return (NULL);
 }
 
-// int check_died(t_philo *philo)
-// {
-// 	int i;
-// 	i = 0;
-// 	while (i < philo->total_ph)
-// 	{
-// 		pthread_mutex_lock(&philo->mutex_lock);
-// 		if (philo->stop == DIED)
-// 		{
-// 			pthread_mutex_unlock(&philo->mutex_lock);
-// 			return (DIED);
-// 		}
-// 		pthread_mutex_unlock(&philo->mutex_lock);
-// 		philo = philo->next;
-// 		i++;
-// 	}
-// 	return (LIFE);
-// }
-
 int create_threads(t_philo *philo)
 {
 	int i;
@@ -135,6 +94,25 @@ int create_threads(t_philo *philo)
 	free(threads);
 	return (0);
 }
+
+// int check_died(t_philo *philo)
+// {
+// 	int i;
+// 	i = 0;
+// 	while (i < philo->total_ph)
+// 	{
+// 		pthread_mutex_lock(&philo->mutex_lock);
+// 		if (philo->stop == DIED)
+// 		{
+// 			pthread_mutex_unlock(&philo->mutex_lock);
+// 			return (DIED);
+// 		}
+// 		pthread_mutex_unlock(&philo->mutex_lock);
+// 		philo = philo->next;
+// 		i++;
+// 	}
+// 	return (LIFE);
+// }
 
 // void lock_all(t_philo *philo)
 // {

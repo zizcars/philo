@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   routine.c                                          :+:      :+:    :+:   */
+/*   routine_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 14:27:46 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/10 13:07:06 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/10 15:19:36 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 int eating(t_philo *philo, struct timeval start)
 {
@@ -58,7 +58,6 @@ void change_print_state(t_philo *philo)
 
 	i = 0;
 	tmp = philo;
-	// lock_all(philo);
 	while (i < tmp->total_ph)
 	{
 		pthread_mutex_lock(&tmp->print_mutex);
@@ -67,7 +66,6 @@ void change_print_state(t_philo *philo)
 		i++;
 		pthread_mutex_unlock(&tmp->print_mutex);
 	}
-	// unlock_all(philo);
 }
 
 int died(t_philo *philo)
@@ -97,42 +95,12 @@ int died(t_philo *philo)
 	{
 		if (philo->print_message == 1)
 		{
-			// lock_all(philo);
 			printf("%d %d died\n", get_time(philo->start_t), philo->id);
 			change_print_state(philo);
-			// unlock_all(philo);
 		}
 		pthread_mutex_unlock(&philo->mutex_lock);
 		return (DIED);
 	}
 	pthread_mutex_unlock(&philo->mutex_lock);
 	return (LIFE);
-}
-void lock_all(t_philo *philo)
-{
-	int i;
-	t_philo *tmp;
-
-	tmp = philo;
-	i = 0;
-	while(i < philo->total_ph)
-	{
-		pthread_mutex_lock(&tmp->print_mutex);
-		i++;
-		tmp = tmp->next;
-	}
-}
-void unlock_all(t_philo *philo)
-{
-	int i;
-	t_philo *tmp;
-
-	tmp = philo;
-	i = 0;
-	while(i < philo->total_ph)
-	{
-		pthread_mutex_unlock(&tmp->print_mutex);
-		tmp = tmp->next;
-		i++;
-	}
 }

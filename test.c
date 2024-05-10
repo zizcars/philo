@@ -1,16 +1,38 @@
-#include "philo.h"
-
+#include <stdio.h>
+#include <unistd.h>
+#include <semaphore.h>
+#include <fcntl.h>
+#include <sys/wait.h>
 int main()
 {
-    struct timeval start_time;
-    struct timeval end_time;
+    sem_t *semaphore = sem_open("abdo", O_CREAT, 0644, 1);
+    pid_t pid[2];
+    if (semaphore == SEM_FAILED)
+    {
+        perror("sem_open/semaphore");
+        return 1;
+    }
 
-   gettimeofday(&start_time, NULL);
-    int i = 0;
-    usleep(1000 * 50);
-    gettimeofday(&end_time,NULL);
-    long time_;
+    for (int i = 0; i < 2; i++)
+    {
+        pid[i] = fork();
+        if (pid[i] < 0)
+        {
+            perror("fork");
+            return 1;
+        }
+        else if (pid[i] == 0)
+        {
+            sem_wait(semaphore);
+            printf("Child process %d\n", i);
+            sem_post(semaphore);
+            sleep(4);
+            // return 0;
+        }
+    }
+    while (waitpid(-1, NULL, 0) > 0);
+    sem_close(semaphore);
+    sem_unlink("abdo");
 
-    time_ = ((end_time.tv_sec - start_time.tv_sec) * 1000) + (end_time.tv_usec - start_time.tv_usec) / 1000;
-    printf("%ld\n", time_);
+    return 0;
 }

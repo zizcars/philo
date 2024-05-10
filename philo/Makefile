@@ -14,10 +14,10 @@ $(NAME): $(OSRC) philo.h
 	cc $(CFLAGS) $(OSRC) -o $(NAME)
 
 clean:
-	rm -f $(OSRC)
+	rm -f $(OSRC) $(BOSRC)
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) $(BNAME)
 
 re: fclean all
 
