@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/09 17:03:46 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/10 12:32:39 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,4 +94,7 @@ int create_threads(t_philo *philo);
 
 int ft_sleep(t_philo *philo, int time_us);
 int died(t_philo *philo);
+
+void unlock_all(t_philo *philo);
+void lock_all(t_philo *philo);
 #endif
