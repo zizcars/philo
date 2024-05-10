@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/10 15:19:24 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/10 20:24:04 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,22 @@
 
 int main(int ac, char **av)
 {
-	t_philo *philo;
-
+	t_philo philo;
 	// atexit(leaks);
 	if (ac < 5 || ac > 6)
 	{
-		write(2, "\e[31mError1\n\e[0m", 17);
+		write(2, RED"ERROR1\n", 13);
 		return (1);
 	}
-	if ((philo = create_table(ac, av)) == NULL)
+	if (default_info(&philo, ac, av) == ERROR)
 	{
-		write(2, "Error2\n", 7);
+		write(2, RED"ERROR2\n", 13);
 		return (1);
-	};
-	create_threads(philo);
-	free_all(philo);
+	}
+	while(philo.id < philo.total_ph)
+	{
+		
+		philo.id++;
+	}
+	printf("%d %d\n",philo.print_message, philo.stop);
 }

@@ -6,15 +6,12 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/10 15:02:32 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/10 19:54:03 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/// @brief calculte time in ms 
-/// @param start_t start point
-/// @return time from start in ms
 int get_time(struct timeval start_t)
 {
 	struct timeval end_t;

@@ -3,6 +3,7 @@
 #include <semaphore.h>
 #include <fcntl.h>
 #include <sys/wait.h>
+
 int main()
 {
     sem_t *semaphore = sem_open("abdo", O_CREAT, 0644, 1);
@@ -23,6 +24,7 @@ int main()
         }
         else if (pid[i] == 0)
         {
+
             sem_wait(semaphore);
             printf("Child process %d\n", i);
             sem_post(semaphore);
@@ -30,7 +32,8 @@ int main()
             // return 0;
         }
     }
-    while (waitpid(-1, NULL, 0) > 0);
+    while (waitpid(-1, NULL, 0) > 0)
+        ;
     sem_close(semaphore);
     sem_unlink("abdo");
 
