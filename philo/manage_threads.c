@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   manage_forks.c                                     :+:      :+:    :+:   */
+/*   manage_threads.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
+/*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/10 19:54:03 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/11 18:55:34 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,31 +109,4 @@ int create_threads(t_philo *philo)
 // 		i++;
 // 	}
 // 	return (LIFE);
-// }
-
-// void lock_all(t_philo *philo)
-// {
-// 	int i;
-// 	i = 0;
-// 	t_philo *tmp;
-// 	tmp = philo;
-// 	while (i < tmp->total_ph)
-// 	{
-// 		pthread_mutex_lock(&tmp->mutex_lock);
-// 		tmp = tmp->next;
-// 		i++;
-// 	}
-// }
-// void unlock_all(t_philo *philo)
-// {
-// 	int i;
-// 	i = 0;
-// 	t_philo *tmp;
-// 	tmp = philo;
-// 	while (i < tmp->total_ph)
-// 	{
-// 		pthread_mutex_unlock(&tmp->mutex_lock);
-// 		tmp = tmp->next;
-// 		i++;
-// 	}
 // }

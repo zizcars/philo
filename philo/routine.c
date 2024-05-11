@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
+/*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 14:27:46 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/10 18:58:59 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/11 18:57:16 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,11 @@ void change_print_state(t_philo *philo)
 	tmp = philo;
 	while (i < tmp->total_ph)
 	{
-		pthread_mutex_lock(&tmp->print_mutex);
-		tmp->print_message = 0;
+		pthread_mutex_lock(&tmp->mutex_print);
+		tmp->print = 0;
 		tmp = tmp->next;
 		i++;
-		pthread_mutex_unlock(&tmp->print_mutex);
+		pthread_mutex_unlock(&tmp->mutex_print);
 	}
 }
 
@@ -93,7 +93,7 @@ int died(t_philo *philo)
 		philo->stop = DIED;
 	if (philo->stop == DIED || check == DIED)
 	{
-		if (philo->print_message == 1)
+		if (philo->print == 1)
 		{
 			printf("%d %d died\n", get_time(philo->start_t), philo->id);
 			change_print_state(philo);

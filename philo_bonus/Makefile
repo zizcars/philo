@@ -3,9 +3,9 @@ NAME = philo_bonus
 
 BSRC=	main_bonus.c  \
 		set_default_bonus.c \
-		philo_tooles_bonus.c 
-# manage_forks_bonus.c \
-# routine_bonus.c
+		philo_tooles_bonus.c \
+		manage_forks_bonus.c \
+		routine_bonus.c
 
 OSRC=$(BSRC:.c=.o)
 

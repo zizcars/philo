@@ -6,7 +6,7 @@
 /*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/10 19:51:25 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/11 11:33:52 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ typedef struct s_philo
 	int print_message;
 	int stop;
 	sem_t *semaphore;
+	sem_t *mutex;
+	sem_t *lock;
 } t_philo;
 
 int convert_int(char *str);
@@ -47,6 +49,16 @@ int convert_int(char *str);
 int get_numbers(t_philo *philo_info, int ac, char **av);
 
 int default_info(t_philo *philo, int ac, char **av);
+
+int create_children(t_philo *philo);
+
+int died(t_philo *philo);
+
+int eating(t_philo *philo, struct timeval start);
+
+int ft_sleep(t_philo *philo, int time_ms);
+
+int get_time(struct timeval start_t);
 
 
 

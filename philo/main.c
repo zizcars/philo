@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
+/*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/10 15:02:53 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/11 18:43:13 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ int main(int ac, char **av)
 	// atexit(leaks);
 	if (ac < 5 || ac > 6)
 	{
-		write(2, "\e[31mError1\n\e[0m", 17);
+		write(2, "ERROR: Incorrect number of arguments\n", 38);
 		return (1);
 	}
-	if ((philo = create_table(ac, av)) == NULL)
+	if ((philo = set_default(ac, av)) == NULL)
 	{
-		write(2, "Error2\n", 7);
+		write(2, "ERROR: Failed to initialize philosophers\n", 42);
 		return (1);
-	};
+	}
 	create_threads(philo);
 	free_all(philo);
 }

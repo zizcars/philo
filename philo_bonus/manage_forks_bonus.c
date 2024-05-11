@@ -3,31 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   manage_forks_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
+/*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/10 15:19:29 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/11 12:11:24 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+#define F_TIME (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec)
+#define L_TIME (end_t.tv_sec - start_t.tv_sec) * 1000 + (end_t.tv_usec - start_t.tv_usec) / 1000
 
-/// @brief calculte time in ms 
-/// @param start_t start point
-/// @return time from start in ms
 int get_time(struct timeval start_t)
 {
 	struct timeval end_t;
 
 	if (gettimeofday(&end_t, NULL))
 		return (-1);
-	return ((end_t.tv_sec - start_t.tv_sec) * 1000 + (end_t.tv_usec - start_t.tv_usec) / 1000);
+	return (L_TIME);
 }
 
 int ft_sleep(t_philo *philo, int time_ms)
 {
 	struct timeval start, end;
-	long elapsed;
+	// long elapsed;
 
 	time_ms *= 1000;
 	while (time_ms > 0)
@@ -37,8 +36,7 @@ int ft_sleep(t_philo *philo, int time_ms)
 		if (died(philo) == DIED)
 			return (DIED);
 		gettimeofday(&end, NULL);
-		elapsed = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
-		time_ms -= elapsed;
+		time_ms -= F_TIME;
 	}
 	return (LIFE);
 }
@@ -59,7 +57,7 @@ void *philosopher(void *arg)
 		gettimeofday(&philo->start_t, NULL);
 		if (eating(philo, philo->start) == DIED)
 			break;
-		gettimeofday(&philo->start_t, NULL);	
+		gettimeofday(&philo->start_t, NULL);
 		printf("%d %d is sleeping\n", get_time(philo->start), philo->id);
 		int check = ft_sleep(philo, philo->t_sleep);
 		if (died(philo) == DIED || check == DIED)
@@ -70,29 +68,24 @@ void *philosopher(void *arg)
 	return (NULL);
 }
 
-int create_threads(t_philo *philo)
+int create_children(t_philo *philo)
 {
-	int i;
-	pthread_t *threads;
+	int pid;
 
-	threads = malloc(sizeof(pthread_t) * philo->total_ph);
-	i = 0;
-	while (i < philo->total_ph)
+	while (philo->id <= philo->total_ph)
 	{
-		pthread_create(&threads[i], NULL, philosopher, philo);
-		if (i % 2 == 0)
-			usleep(100);
-		philo = philo->next;
-		i++;
+		pid = fork();
+		if (pid < 0)
+		{
+			write(2 , RED"ERROR IN FORK\n", 20);
+			return (ERROR);
+		}
+		else if (pid == 0)
+			philosopher(philo);
+		usleep(1000);
+		philo->id++;
 	}
-	i = 0;
-	while (i < philo->total_ph)
-	{
-		pthread_join(threads[i], NULL);
-		i++;
-	}
-	free(threads);
-	return (0);
+	return (GOOD);
 }
 
 // int check_died(t_philo *philo)

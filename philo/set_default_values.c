@@ -1,102 +1,98 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   create_table.c                                     :+:      :+:    :+:   */
+/*   set_default_values.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
+/*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/09 17:04:17 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/11 14:12:28 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int set_default(t_philo *philo, int ac, char **av)
+int set_numbers(t_philo *philo, int ac, char **av)
 {
 	philo->total_ph = convert_int(av[1]);
-	if (philo->total_ph == -1)
-		return (1);
+	if (philo->total_ph == ERROR)
+		return (ERROR);
 	philo->t_die = convert_int(av[2]);
-	if (philo->t_die == -1)
-		return (1);
+	if (philo->t_die == ERROR)
+		return (ERROR);
 	philo->t_eat = convert_int(av[3]);
-	if (philo->t_eat == -1)
-		return (1);
+	if (philo->t_eat == ERROR)
+		return (ERROR);
 	philo->t_sleep = convert_int(av[4]);
-	if (philo->t_sleep == -1)
-		return (1);
+	if (philo->t_sleep == ERROR)
+		return (ERROR);
 	if (ac == 6)
 	{
 		philo->n_t_m_eat = convert_int(av[5]);
-		if (philo->n_t_m_eat == -1)
-			return (1);
+		if (philo->n_t_m_eat == ERROR)
+			return (ERROR);
 	}
 	else
 		philo->n_t_m_eat = 0;
-	// if (philo->t_die <  philo->t_eat)
-	// 	return (2);
-	return (0);
+	return (GOOD);
 }
 
-t_philo *create_philo(int id)
+t_philo *set_philo(int id)
 {
 	t_philo *philo;
 
 	philo = malloc(sizeof(t_philo));
 	if (pthread_mutex_init(&philo->l_fork, NULL) || pthread_mutex_init(&philo->r_fork, NULL) || pthread_mutex_init(&philo->mutex_lock, NULL) )
 		return (NULL);
-	pthread_mutex_init(&philo->print_mutex, NULL);
+	if (pthread_mutex_init(&philo->mutex_print, NULL) || pthread_mutex_init(&philo->mutex_thread, NULL))
+		return (NULL);
 	philo->id = id;
-	// philo->state = THINKING;
 	philo->stop = LIFE;
-	philo->print_message = 1;
+	philo->print = 1;
 	return (philo);
 }
 
-t_philo *create_table(int ac, char **av)
+t_philo *set_default(int ac, char **av)
 {
 	int id;
-	t_philo *tmp;
 	t_philo *first;
+	t_philo *tmp;
 	t_philo *philo;
 
 	id = 1;
-	philo = create_philo(id++);
-	if (philo == NULL || set_default(philo, ac, av))
+	philo = set_philo(id++);
+	if (philo == NULL || set_numbers(philo, ac, av))
 		return (NULL);
 	first = philo;
 	while (id <= philo->total_ph)
 	{
 		tmp = philo;
-		philo = create_philo(id);
-		if (philo == NULL || set_default(philo, ac, av))
+		philo = set_philo(id);
+		if (philo == NULL || set_numbers(philo, ac, av))
 		{
 			free_all(first);
 			return (NULL);
 		}
 		tmp->next = philo;
-		// philo->previous = tmp;
 		id++;
 	}
 	philo->next = first;
-	// first->previous = philo;
 	return (first);
 }
 
-void free_all(t_philo *table)
+void free_all(t_philo *philo)
 {
 	int check;
 	t_philo *tmp;
 
-	check = table->id;
-	table = table->next;
-	while (table->id != check)
+	check = philo->id;
+	philo = philo->next;
+	while (philo->id != check)
 	{
-		tmp = table->next;
-		free(table);
-		table = tmp;
+		tmp = philo->next;
+		free(philo);
+		philo = tmp;
 	}
-	free(table);
-	table = NULL;
+	free(philo);
+	philo = NULL;
 }
