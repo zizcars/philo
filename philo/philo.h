@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/14 14:57:00 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:23:01 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ typedef struct s_data
 	int dead;
 	long start_t;
 	t_philo *philos;
+	int n_times;
+	pthread_mutex_t lock_n_times;
 	// struct timeval start;
 	pthread_mutex_t **forks;
 	pthread_mutex_t lock;
@@ -87,5 +89,6 @@ void put_forks(t_philo *philo);
 int check_death(t_philo *philo);
 // void *died(void *arg);
 void *monitor(void *arg);
+int check_n_times(t_data *data);
 
 #endif

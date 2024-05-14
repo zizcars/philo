@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/14 15:00:08 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/14 19:12:46 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ long get_time(void)
 
 void print_message(char *message, t_philo *philo)
 {
-	pthread_mutex_lock(&philo->write);
+	pthread_mutex_lock(&philo->data->lock);
 	if (philo->data->dead != DIED)
 		printf("%ld %d %s\n", get_time() - philo->start, philo->id, message);
-	pthread_mutex_unlock(&philo->write);
+	pthread_mutex_unlock(&philo->data->lock);
 }
 
 int ft_sleep(int time_ms, t_philo *philo)
@@ -36,15 +36,15 @@ int ft_sleep(int time_ms, t_philo *philo)
 
 	while (time_ms > 0)
 	{
-        start = get_time();
+		start = get_time();
 		usleep(1000);
-		pthread_mutex_lock(&philo->write);
+		pthread_mutex_lock(&philo->data->lock);
 		if (philo->data->dead == DIED)
 		{
-			pthread_mutex_unlock(&philo->write);
+			pthread_mutex_unlock(&philo->data->lock);
 			return (DIED);
 		}
-		pthread_mutex_unlock(&philo->write);
+		pthread_mutex_unlock(&philo->data->lock);
 		end = get_time();
 		elapsed = end - start;
 		time_ms -= elapsed;
@@ -55,25 +55,24 @@ int ft_sleep(int time_ms, t_philo *philo)
 void *philosopher(void *arg)
 {
 	t_philo *philo = (t_philo *)arg;
-	int n_times;
 
-	if (philo->data->n_t_m_eat == 0)
-		n_times = 1;
-	else
-		n_times = philo->data->n_t_m_eat;
 	if (philo->id % 2 == 0)
 		usleep(100);
 	philo->start = get_time();
-	while (n_times && check_death(philo) == LIFE)
+	while (check_n_times(philo->data) == GOOD && check_death(philo) == LIFE)
 	{
+		if (philo->data->n_t_m_eat && check_n_times(philo->data) == GOOD)
+		{
+			pthread_mutex_lock(&philo->data->lock_n_times);
+			philo->data->n_times--;
+			pthread_mutex_unlock(&philo->data->lock_n_times);
+		}
 		print_message("is thinking", philo);
 		routine(philo);
-		if (philo->data->n_t_m_eat)
-			n_times--;
 	}
 	return (NULL);
 }
-
+// 5 800 200 200 7 test that
 int add_threads(t_data *data)
 {
 	int i;
@@ -84,7 +83,6 @@ int add_threads(t_data *data)
 	if (threads == NULL)
 		return (ERROR);
 	i = 0;
-	// philo->last_meal = get_time();
 	pthread_create(&threads[i++], NULL, monitor, data);
 	id = 0;
 	while (id < data->total_ph)
@@ -92,7 +90,6 @@ int add_threads(t_data *data)
 		pthread_create(&threads[i], NULL, philosopher, &data->philos[id++]);
 		i++;
 	}
-	
 	i = 0;
 	while (i < data->total_ph + 1)
 	{
@@ -105,3 +102,14 @@ int add_threads(t_data *data)
 	return (0);
 }
 
+int check_n_times(t_data *data)
+{
+	pthread_mutex_lock(&data->lock_n_times);
+	if (data->n_times <= 0)
+	{
+		pthread_mutex_unlock(&data->lock_n_times);
+		return (-1);
+	}
+	pthread_mutex_unlock(&data->lock_n_times);
+	return (GOOD);
+}

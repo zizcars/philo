@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/14 14:39:11 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:24:40 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ int set_default(t_data *data, int ac, char **av)
 	}
 	else
 		data->n_t_m_eat = 0;
+	if (data->n_t_m_eat == 0)
+		data->n_times = 1;
+	else
+		data->n_times = data->n_t_m_eat;
 	data->dead = LIFE;
 	return (GOOD);
 }
@@ -65,7 +69,9 @@ int set_id_forks(t_data *data)
 
 	id = 0;
 	if (pthread_mutex_init(&data->lock, NULL))
-			return (ERROR);
+		return (ERROR);
+	if (pthread_mutex_init(&data->lock_n_times, NULL))
+		return (ERROR);
 	while (id < data->total_ph)
 	{
 		data->philos[id].id = id + 1;
@@ -109,7 +115,7 @@ int set_init(t_data *data, int ac, char **av)
 		ft_error("Error: Allocation failed\n");
 		return (ERROR);
 	}
-	if (set_id_forks(data)== ERROR)
+	if (set_id_forks(data) == ERROR)
 	{
 		ft_error("Error: pthread_mutex_init crashed\n");
 		return (ERROR);

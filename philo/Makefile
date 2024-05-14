@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Wextra -Werror -fsanitize=thread -g
+CFLAGS = -Wall -Wextra -Werror# -fsanitize=thread -g
 NAME = philo
 SRC =	main.c \
 		convert_int.c \
