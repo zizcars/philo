@@ -3,35 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
+/*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/10 15:02:53 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/13 15:23:38 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// void leaks()
-// {
-// 	system("leaks philo");
-// }
+void ft_error(char *error_massege)
+{
+	int len;
+
+	len = 0;
+	while (error_massege[len])
+		len++;
+	write(STDERR, error_massege, len);
+}
 
 int main(int ac, char **av)
 {
-	t_philo *philo;
+	t_data data;
 
-	// atexit(leaks);
 	if (ac < 5 || ac > 6)
 	{
-		write(2, "\e[31mError1\n\e[0m", 17);
+		ft_error("Error: incorrect number of arguments\n");
 		return (1);
 	}
-	if ((philo = create_table(ac, av)) == NULL)
-	{
-		write(2, "Error2\n", 7);
+	if (set_init(&data, ac, av) == ERROR)
 		return (1);
-	};
-	create_threads(philo);
-	free_all(philo);
+	add_threads(&data);
+	// printf("%d\n", data.n_t_m_eat);
+	// int i; 
+	// i = 0;
+	// while(i < data.philos[0].data->total_ph)
+	// {
+	// 	printf("%d: %d\n", data.philos[i].id, i );
+	// 	i++;
+	// }
 }

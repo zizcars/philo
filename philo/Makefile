@@ -1,23 +1,36 @@
-CFLAGS = -Wall -Wextra -Werror # -fsanitize=thread -g
+CFLAGS = -Wall -Wextra -Werror -fsanitize=thread -g
 NAME = philo
 SRC =	main.c \
-		philo_tooles.c \
-		create_table.c \
-		manage_forks.c \
-		routine.c 
+		convert_int.c \
+		set_default.c \
+		thread_managment.c \
+		routine.c
+ 
+GRN = "\033[32m"
+ORG = "\033[34m"
+RED = "\033[31m"
+END = "\033[0m"
 
 OSRC=$(SRC:.c=.o)
+
+%.o: %.c 
+	@echo $(ORG)Compiling [$@]...$(END)
+	@cc $(CFLAGS) -c -o $@ $<
+
 
 all: $(NAME)
 
 $(NAME): $(OSRC) philo.h
-	cc $(CFLAGS) $(OSRC) -o $(NAME)
+	@cc $(CFLAGS) $(OSRC) -o $(NAME)
+# @echo $(GRN)DONE$(END)
 
 clean:
-	rm -f $(OSRC) $(BOSRC)
+	@echo $(RED)Remove [$(OSRC)$(BOSRC)]$(END)
+	@rm -f $(OSRC) $(BOSRC)
 
 fclean: clean
-	rm -f $(NAME) $(BNAME)
+	@echo $(RED)Remove [$(NAME)$(BNAME)]$(END)
+	@rm -f $(NAME) $(BNAME)
 
 re: fclean all
 

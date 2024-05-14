@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_tooles.c                                     :+:      :+:    :+:   */
+/*   convert_int.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: achakkaf <zizcarschak1@gmail.com>          +#+  +:+       +#+        */
+/*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 11:36:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/09 14:31:16 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/13 12:31:22 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int convert_int(char *str)
 	number = 0;
 	skip_space(&str);
 	if (str == NULL || *str == '-' || *str == '\0')
-		return (-1);
+		return (ERROR);
 	else if (*str == '+')
 		str++;
 	while (*str >= '0' && *str <= '9')
@@ -36,10 +36,8 @@ int convert_int(char *str)
 		str++;
 	}
 	skip_space(&str);
-	if (*str != '\0')
-		return (-1);
-	if (number == 0)
-		return (-1);
+	if (*str != '\0' || number == 0)
+		return (ERROR);
 	return (number);
 }
 
