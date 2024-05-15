@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/13 15:23:38 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/15 12:00:06 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,57 @@ void ft_error(char *error_massege)
 	write(STDERR, error_massege, len);
 }
 
+int check_n_times(t_data *data)
+{
+	pthread_mutex_lock(&data->lock_n_times);
+	if (data->n_times <= 0)
+	{
+		pthread_mutex_unlock(&data->lock_n_times);
+		return (-1);
+	}
+	pthread_mutex_unlock(&data->lock_n_times);
+	return (GOOD);
+}
+
+int check_stop(t_data *data)
+{
+	pthread_mutex_lock(&data->lock_n_times);
+	if (data->stop == 0)
+	{
+		pthread_mutex_unlock(&data->lock_n_times);
+		return (-1);
+	}
+	pthread_mutex_unlock(&data->lock_n_times);
+	return (GOOD);
+}
+
+void clean_all(t_data *data)
+{
+	int i;
+
+	i = 0;
+	while (i < data->total_ph)
+	{
+		pthread_mutex_destroy(data->forks[i]);
+		free(data->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&data->lock);
+	pthread_mutex_destroy(&data->lock_n_times);
+	free(data->forks);
+	free(data->philos);
+}
+
+void leaks(void)
+{
+	system("leaks philo");
+}
+
 int main(int ac, char **av)
 {
 	t_data data;
 
+	// atexit(leaks);
 	if (ac < 5 || ac > 6)
 	{
 		ft_error("Error: incorrect number of arguments\n");
@@ -33,13 +80,10 @@ int main(int ac, char **av)
 	}
 	if (set_init(&data, ac, av) == ERROR)
 		return (1);
-	add_threads(&data);
-	// printf("%d\n", data.n_t_m_eat);
-	// int i; 
-	// i = 0;
-	// while(i < data.philos[0].data->total_ph)
-	// {
-	// 	printf("%d: %d\n", data.philos[i].id, i );
-	// 	i++;
-	// }
+	if (add_threads(&data) == ERROR)
+	{
+		clean_all(&data);
+		return (1);
+	}
+	clean_all(&data);
 }

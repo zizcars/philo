@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/14 18:24:40 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/15 11:56:50 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int set_default(t_data *data, int ac, char **av)
 	else
 		data->n_times = data->n_t_m_eat;
 	data->dead = LIFE;
+	data->stop = 1;
 	return (GOOD);
 }
 

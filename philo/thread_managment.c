@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/14 19:12:46 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/15 11:28:12 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,7 @@ void *philosopher(void *arg)
 	philo->start = get_time();
 	while (check_n_times(philo->data) == GOOD && check_death(philo) == LIFE)
 	{
-		if (philo->data->n_t_m_eat && check_n_times(philo->data) == GOOD)
-		{
-			pthread_mutex_lock(&philo->data->lock_n_times);
-			philo->data->n_times--;
-			pthread_mutex_unlock(&philo->data->lock_n_times);
-		}
+		// write(1, "hell\n", 5);
 		print_message("is thinking", philo);
 		routine(philo);
 	}
@@ -83,33 +78,43 @@ int add_threads(t_data *data)
 	if (threads == NULL)
 		return (ERROR);
 	i = 0;
-	pthread_create(&threads[i++], NULL, monitor, data);
+	if (pthread_create(&threads[i++], NULL, monitor, data))
+	{
+		free(threads);
+		return (ERROR);
+	}
 	id = 0;
 	while (id < data->total_ph)
 	{
-		pthread_create(&threads[i], NULL, philosopher, &data->philos[id++]);
-		i++;
+		if (pthread_create(&threads[i++], NULL, philosopher, &data->philos[id++]))
+		{
+			free(threads);
+			return (ERROR);
+		}
 	}
+	if (join_free(data, threads) == ERROR)
+		return (GOOD);
+	return (GOOD);
+}
+
+int join_free(t_data *data, pthread_t *threads)
+{
+	int i;
+
 	i = 0;
 	while (i < data->total_ph + 1)
 	{
-		pthread_join(threads[i], NULL);
-		i++;
+		if (pthread_join(threads[i++], NULL))
+		{
+			free(threads);
+			return (ERROR);
+		}
 	}
-
-	// destroy all thread
+	i = 0;
+	while (i < data->total_ph)
+		pthread_detach(threads[i++]);
 	free(threads);
-	return (0);
-}
-
-int check_n_times(t_data *data)
-{
-	pthread_mutex_lock(&data->lock_n_times);
-	if (data->n_times <= 0)
-	{
-		pthread_mutex_unlock(&data->lock_n_times);
-		return (-1);
-	}
-	pthread_mutex_unlock(&data->lock_n_times);
 	return (GOOD);
 }
+
+

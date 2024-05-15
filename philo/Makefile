@@ -13,14 +13,14 @@ END = "\033[0m"
 
 OSRC=$(SRC:.c=.o)
 
-%.o: %.c 
+%.o: %.c philo.h
 	@echo $(ORG)Compiling [$@]...$(END)
 	@cc $(CFLAGS) -c -o $@ $<
 
 
 all: $(NAME)
 
-$(NAME): $(OSRC) philo.h
+$(NAME): $(OSRC) 
 	@cc $(CFLAGS) $(OSRC) -o $(NAME)
 # @echo $(GRN)DONE$(END)
 

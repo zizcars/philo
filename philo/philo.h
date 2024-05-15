@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/14 18:23:01 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/15 11:56:29 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,12 @@
 typedef struct s_philo
 {
 	int id;
-	// int n_t_m_eat;
 	long last_meal;
-	// struct timeval end_t;
 	long start;
-	// int print_message;
-	// int stop;
 	int is_eating;
 	pthread_mutex_t *r_fork;
 	pthread_mutex_t *l_fork;
-	// pthread_mutex_t mutex_lock;
 	pthread_mutex_t write;
-	// pthread_mutex_t print_mutex;
 	struct s_data *data;
 } t_philo;
 
@@ -54,11 +48,11 @@ typedef struct s_data
 	int t_sleep;
 	int n_t_m_eat;
 	int dead;
+	int stop;
 	long start_t;
 	t_philo *philos;
 	int n_times;
 	pthread_mutex_t lock_n_times;
-	// struct timeval start;
 	pthread_mutex_t **forks;
 	pthread_mutex_t lock;
 }	t_data;
@@ -74,13 +68,14 @@ int convert_int(char *str);
 
 /*-----------------main-----------*/
 void ft_error(char *error_massege);
-
+int check_stop(t_data *data);
 /*-----------------thread_managment-----------*/
 long get_time(void);
 int add_threads(t_data *data);
 void *philosopher(void *arg);
 int ft_sleep(int time_ms, t_philo *philo);
 void print_message(char *message, t_philo *philo);
+int join_free(t_data *data, pthread_t *threads);
 
 /*-----------------routine-----------*/
 void routine(t_philo *philo);
@@ -90,5 +85,6 @@ int check_death(t_philo *philo);
 // void *died(void *arg);
 void *monitor(void *arg);
 int check_n_times(t_data *data);
+
 
 #endif
