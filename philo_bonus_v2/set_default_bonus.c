@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set_default.c                                      :+:      :+:    :+:   */
+/*   set_default_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/15 12:55:35 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/15 16:35:07 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 int set_default(t_data *data, int ac, char **av)
 {
@@ -39,7 +39,7 @@ int set_default(t_data *data, int ac, char **av)
 	else
 		data->n_times = data->n_t_m_eat;
 	data->dead = LIFE;
-	data->stop = 1;
+	// data->stop = 1;
 	return (GOOD);
 }
 
@@ -48,16 +48,9 @@ int data_alloc(t_data *data)
 	int i;
 
 	i = 0;
-	data->forks = malloc(data->total_ph * sizeof(pthread_mutex_t *));
-	if (data->forks == NULL)
-		return (ERROR);
-	while (i < data->total_ph)
-	{
-		data->forks[i] = malloc(sizeof(pthread_mutex_t));
-		if (data->forks[i] == NULL)
-			return (ERROR);
-		i++;
-	}
+	// data->forks = malloc(data->total_ph * sizeof(sem_t));
+	// if (data->forks == NULL)
+	// 	return (ERROR);
 	data->philos = malloc(data->total_ph * sizeof(t_philo));
 	if (data->philos == NULL)
 		return (ERROR);
@@ -69,39 +62,29 @@ int set_id_forks(t_data *data)
 	int id;
 
 	id = 0;
-	if (pthread_mutex_init(&data->lock, NULL))
+	sem_unlink("forks");
+	data->forks = sem_open("forks", O_CREAT, 0644, data->total_ph);
+	if (data->forks == SEM_FAILED)
+	{
+		ft_error("Can't create semaphone with name forks\n");
 		return (ERROR);
-	if (pthread_mutex_init(&data->lock_n_times, NULL))
+	}
+	sem_unlink("lock");
+	data->lock = sem_open("lock", O_CREAT, 0644, 1);
+	if (data->lock == SEM_FAILED)
+	{
+		ft_error("Can't create semaphone with name lock\n");
 		return (ERROR);
+	}
 	while (id < data->total_ph)
 	{
 		data->philos[id].id = id + 1;
 		data->philos[id].is_eating = NOT_EATING;
+		data->philos[id].data = data;
 		data->philos[id].last_meal = get_time();
-		if (pthread_mutex_init(&(data->philos[id].write), NULL))
-			return (ERROR);
-		if (pthread_mutex_init((data->forks)[id], NULL))
-			return (ERROR);
 		id++;
 	}
 	return (GOOD);
-}
-
-void gave_forks(t_data *data)
-{
-	int i;
-
-	i = 0;
-	while (i < data->total_ph - 1)
-	{
-		(data->philos[i]).r_fork = data->forks[i];
-		(data->philos[i]).data = data;
-		(data->philos[i]).l_fork = data->forks[i + 1];
-		i++;
-	}
-	(data->philos[i]).r_fork = data->forks[i];
-	(data->philos[i]).data = data;
-	(data->philos[i]).l_fork = data->forks[0];
 }
 
 int set_init(t_data *data, int ac, char **av)
@@ -118,9 +101,7 @@ int set_init(t_data *data, int ac, char **av)
 	}
 	if (set_id_forks(data) == ERROR)
 	{
-		ft_error("Error: pthread_mutex_init crashed\n");
 		return (ERROR);
 	}
-	gave_forks(data);
 	return (GOOD);
 }
