@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 14:27:46 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/15 16:36:22 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/16 11:17:33 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ void take_forks(t_philo *philo)
 void put_forks(t_philo *philo)
 {
 	sem_post(philo->data->forks);
-	print_message("has put a right fork", philo);
+	// print_message("has put a right fork", philo);
 	sem_post(philo->data->forks);
-	print_message("has put a left fork", philo);
+	// print_message("has put a left fork", philo);
 	philo->is_eating = NOT_EATING;
 }
 

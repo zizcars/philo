@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/16 10:58:31 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/16 11:38:28 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,7 @@ long get_time(void)
 
 void print_message(char *message, t_philo *philo)
 {
-	// sem_wait(philo->data->lock);
-	if (philo->data->dead != DIED)
-		printf("%ld %d %s\n", get_time() - philo->start, philo->id, message);
-	// sem_post(philo->data->lock);
+	printf("%ld %d %s\n", get_time() - philo->start, philo->id, message);
 }
 
 void ft_sleep(int time_ms, t_philo *philo)
@@ -38,37 +35,48 @@ void ft_sleep(int time_ms, t_philo *philo)
 	{
 		start = get_time();
 		usleep(1000);
-		// sem_wait(philo->data->lock);
-		// if (philo->data->dead == DIED)
-		// {
-		// 	// sem_post(philo->data->lock);
-		// 	return (DIED);
-		// }
-		// sem_post(philo->data->lock);
 		end = get_time();
 		elapsed = end - start;
 		time_ms -= elapsed;
 	}
-	// return (LIFE);
+}
+
+void *death(void *arg)
+{
+	t_philo *philo;
+
+	philo = (t_philo *)arg;
+	while (1)
+	{
+		if (get_time() - philo->last_meal > philo->data->t_die)
+		{
+			printf("\e[31m%ld %d is died\n\e[0m", get_time() - philo->last_meal, philo->id);
+			exit(DIED);
+		}
+	}
+	return (NULL);
 }
 
 void philosopher(t_philo *philo)
 {
+	pthread_t checker;
+
 	if (philo->id % 2 == 0)
 		usleep(100);
+	pthread_create(&checker, NULL, death, philo);
 	philo->start = get_time();
-	while (philo->data->dead == LIFE) //(check_death(philo) == LIFE)//(check_n_times(philo->data) == GOOD)
+	while (1)
 	{
 		print_message("is thinking", philo);
 		routine(philo);
 	}
-	exit(GOOD);
 }
 
 void add_threads(t_data *data)
 {
 	int id;
 	pid_t *pid;
+	int j;
 
 	pid = malloc(sizeof(pthread_t) * (data->total_ph));
 	if (pid == NULL)
@@ -86,35 +94,30 @@ void add_threads(t_data *data)
 			philosopher(&data->philos[id]);
 		id++;
 	}
-	data->dead = monitor(data);
-	int j;
-	if (data->dead == DIED)
+	while (waitpid(0, NULL, 0) > 0)
 	{
 		j = 0;
-		if (data->dead == DIED)
-			while (j < data->total_ph)
-				kill(pid[j++], SIGKILL);
-	}
-	waitpid(-1, NULL, 0);
-	free(pid);
-	exit(ERROR);
-	// join_free(data, pid);
-}
-
-void join_free(t_data *data, pid_t *pid)
-{
-	// int status;
-	int i;
-	int j;
-
-	i = 0;
-	while (waitpid(-1, NULL, 0) > 0)
-	{
-		j = 0;
-		if (data->dead == DIED)
-			while (j < data->total_ph)
-				kill(pid[j++], SIGKILL);
+		while(j < data->total_ph)
+			kill(pid[j++], SIGKILL);
 		free(pid);
-		exit(ERROR);
+		exit(0);
 	}
 }
+
+// void join_free(t_data *data, pid_t *pid)
+// {
+// 	// int status;
+// 	int i;
+// 	int j;
+
+// 	i = 0;
+// 	while (waitpid(-1, NULL, 0) > 0)
+// 	{
+// 		j = 0;
+// 		if (data->dead == DIED)
+// 			while (j < data->total_ph)
+// 				kill(pid[j++], SIGKILL);
+// 		free(pid);
+// 		exit(ERROR);
+// 	}
+// }

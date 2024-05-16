@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/16 10:58:33 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/16 11:00:16 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define PHILO_BONUS_H
 
 #include <unistd.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <signal.h>
 #include <sys/wait.h>
