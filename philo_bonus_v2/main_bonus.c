@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/15 16:31:42 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/16 12:24:45 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ void ft_error(char *error_massege)
 // 	pthread_mutex_unlock(&data->lock_n_times);
 // 	return (GOOD);
 // }
-
 // int check_stop(t_data *data)
 // {
 // 	pthread_mutex_lock(&data->lock_n_times);
@@ -45,7 +44,6 @@ void ft_error(char *error_massege)
 // 	pthread_mutex_unlock(&data->lock_n_times);
 // 	return (GOOD);
 // }
-
 // void clean_all(t_data *data)
 // {
 // 	int i;
@@ -64,7 +62,7 @@ void ft_error(char *error_massege)
 
 void leaks(void)
 {
-	system("leaks philo");
+	system("leaks philo_bonus");
 }
 
 int main(int ac, char **av)

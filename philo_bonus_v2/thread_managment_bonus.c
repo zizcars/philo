@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/16 12:18:21 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/16 12:39:08 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,20 +75,19 @@ void philosopher(t_philo *philo)
 void *check_eat_times(void *arg)
 {
 	t_data *data;
-	int j;
 
 	data = (t_data *)arg;
-	while (data->n_times)
+	while(data->n_times)
 	{
 		sem_wait(data->lock);
 		data->n_times--;
-		sem_post(data->lock);
+		sem_post(data->lock);		
 	}
 	j = 0;
-	while (j < data->total_ph)
-		kill(data->pid[j++], SIGKILL);
-	free(data->pid);
-	exit(0);
+		while(j < data->total_ph)
+			kill(data->pid[j++], SIGKILL);
+		free(data->pid);
+		exit(0);
 }
 
 void add_threads(t_data *data)
@@ -121,7 +120,7 @@ void add_threads(t_data *data)
 	while (waitpid(0, NULL, 0) > 0)
 	{
 		j = 0;
-		while (j < data->total_ph)
+		while(j < data->total_ph)
 			kill(data->pid[j++], SIGKILL);
 		free(data->pid);
 		exit(0);
