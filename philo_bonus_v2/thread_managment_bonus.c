@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/16 11:38:28 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/16 12:18:21 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,34 +72,58 @@ void philosopher(t_philo *philo)
 	}
 }
 
+void *check_eat_times(void *arg)
+{
+	t_data *data;
+	int j;
+
+	data = (t_data *)arg;
+	while (data->n_times)
+	{
+		sem_wait(data->lock);
+		data->n_times--;
+		sem_post(data->lock);
+	}
+	j = 0;
+	while (j < data->total_ph)
+		kill(data->pid[j++], SIGKILL);
+	free(data->pid);
+	exit(0);
+}
+
 void add_threads(t_data *data)
 {
 	int id;
-	pid_t *pid;
 	int j;
+	pthread_t time_eat;
 
-	pid = malloc(sizeof(pthread_t) * (data->total_ph));
-	if (pid == NULL)
+	data->pid = malloc(sizeof(pthread_t) * (data->total_ph));
+	if (data->pid == NULL)
 		exit(ERROR);
 	id = 0;
 	while (id < data->total_ph)
 	{
-		pid[id] = fork();
-		if (pid[id] == -1)
+		data->pid[id] = fork();
+		if (data->pid[id] == -1)
 		{
-			free(pid);
+			free(data->pid);
 			exit(ERROR);
 		}
-		else if (pid[id] == 0)
+		else if (data->pid[id] == 0)
 			philosopher(&data->philos[id]);
 		id++;
+	}
+	if (data->n_t_m_eat)
+	{
+		data->n_times = data->n_t_m_eat;
+		pthread_create(&time_eat, NULL, check_eat_times, data);
 	}
 	while (waitpid(0, NULL, 0) > 0)
 	{
 		j = 0;
-		while(j < data->total_ph)
-			kill(pid[j++], SIGKILL);
-		free(pid);
+		while (j < data->total_ph)
+			kill(data->pid[j++], SIGKILL);
+		free(data->pid);
 		exit(0);
 	}
 }

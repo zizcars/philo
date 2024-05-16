@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 14:27:46 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/16 11:17:33 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/16 12:21:19 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@ void routine(t_philo *philo)
 	take_forks(philo);
 	if (philo->is_eating == EATING)
 	{
+		sem_wait(philo->data->lock);
 		print_message("is eating", philo);
 		ft_sleep(philo->data->t_eat, philo);
+		sem_wait(philo->data->lock);
 		philo->last_meal = get_time();
 		put_forks(philo);
 		print_message("is sleeping", philo);
@@ -46,9 +48,7 @@ void take_forks(t_philo *philo)
 void put_forks(t_philo *philo)
 {
 	sem_post(philo->data->forks);
-	// print_message("has put a right fork", philo);
 	sem_post(philo->data->forks);
-	// print_message("has put a left fork", philo);
 	philo->is_eating = NOT_EATING;
 }
 

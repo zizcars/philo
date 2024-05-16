@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/16 11:00:16 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/16 12:17:27 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ typedef struct s_data
 	t_philo *philos;
 	int n_times;
 	sem_t *forks;
-	// pthread_mutex_t lock_n_times;
 	sem_t *lock;
+	pid_t *pid;
 }	t_data;
 
 /*-----------------set_default-----------*/
