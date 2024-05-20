@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/15 16:35:07 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/20 20:28:55 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,10 @@ int set_default(t_data *data, int ac, char **av)
 	else
 		data->n_t_m_eat = 0;
 	if (data->n_t_m_eat == 0)
-		data->n_times = 1;
+		data->n_times = -1;
 	else
 		data->n_times = data->n_t_m_eat;
 	data->dead = LIFE;
-	// data->stop = 1;
 	return (GOOD);
 }
 
@@ -76,12 +75,22 @@ int set_id_forks(t_data *data)
 		ft_error("Can't create semaphone with name lock\n");
 		return (ERROR);
 	}
+	// sem_unlink("wait");
+	// data->wait = sem_open("wait", O_CREAT, 0644, 1);
+	// if (data->wait == SEM_FAILED)
+	// {
+	// 	ft_error("Can't create semaphone with name wait\n");
+	// 	return (ERROR);
+	// }
 	while (id < data->total_ph)
 	{
 		data->philos[id].id = id + 1;
-		data->philos[id].is_eating = NOT_EATING;
+		if (id % 2 == 0)
+			data->philos[id].state = go_eat;
+		else
+			data->philos[id].state = go_sleep;
 		data->philos[id].data = data;
-		data->philos[id].last_meal = get_time();
+		// data->philos[id].last_meal = get_time();
 		id++;
 	}
 	return (GOOD);

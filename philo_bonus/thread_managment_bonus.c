@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/16 12:39:08 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/20 18:01:44 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,22 +23,16 @@ long get_time(void)
 
 void print_message(char *message, t_philo *philo)
 {
-	printf("%ld %d %s\n", get_time() - philo->start, philo->id, message);
+	printf("%ld %d %s\n", get_time() - philo->data->start_t, philo->id, message);
 }
 
-void ft_sleep(int time_ms, t_philo *philo)
+void mssleep(int time_ms)
 {
-	long start, end;
-	long elapsed;
-	(void)philo;
-	while (time_ms > 0)
-	{
-		start = get_time();
-		usleep(1000);
-		end = get_time();
-		elapsed = end - start;
-		time_ms -= elapsed;
-	}
+	long start;
+
+	start = get_time();
+	while (get_time() - start < time_ms)
+		usleep(100);
 }
 
 void *death(void *arg)
@@ -48,9 +42,10 @@ void *death(void *arg)
 	philo = (t_philo *)arg;
 	while (1)
 	{
-		if (get_time() - philo->last_meal > philo->data->t_die)
+		if (get_time() - philo->last_meal >= philo->data->t_die)
 		{
-			printf("\e[31m%ld %d is died\n\e[0m", get_time() - philo->last_meal, philo->id);
+			sem_wait(philo->data->lock);
+			printf("\e[31m%ld %d is died\n\e[0m", get_time() - philo->data->start_t, philo->id);
 			exit(DIED);
 		}
 	}
@@ -61,45 +56,48 @@ void philosopher(t_philo *philo)
 {
 	pthread_t checker;
 
-	if (philo->id % 2 == 0)
-		usleep(100);
+	philo->last_meal = get_time();
 	pthread_create(&checker, NULL, death, philo);
-	philo->start = get_time();
 	while (1)
 	{
-		print_message("is thinking", philo);
-		routine(philo);
+		if (philo->state == go_eat)
+			eating(philo);
+		else
+			sleeping(philo);
 	}
 }
 
-void *check_eat_times(void *arg)
-{
-	t_data *data;
+// void *check_eat_times(void *arg)
+// {
+// 	t_data *data;
+// 	int j;
 
-	data = (t_data *)arg;
-	while(data->n_times)
-	{
-		sem_wait(data->lock);
-		data->n_times--;
-		sem_post(data->lock);		
-	}
-	j = 0;
-		while(j < data->total_ph)
-			kill(data->pid[j++], SIGKILL);
-		free(data->pid);
-		exit(0);
-}
+// 	data = (t_data *)arg;
+// 	while (data->n_times)
+// 	{
+// 		sem_wait(data->lock);
+// 		data->n_times--;
+// 		sem_post(data->lock);
+// 	}
+// 	j = 0;
+// 	while (j < data->total_ph)
+// 		kill(data->pid[j++], SIGKILL);
+// 	free(data->pid);
+// 	exit(0);
+// }
 
 void add_threads(t_data *data)
 {
 	int id;
 	int j;
-	pthread_t time_eat;
+	// pthread_t time_eat;
 
 	data->pid = malloc(sizeof(pthread_t) * (data->total_ph));
 	if (data->pid == NULL)
 		exit(ERROR);
 	id = 0;
+	data->wait = 0;
+	data->start_t = get_time();
 	while (id < data->total_ph)
 	{
 		data->pid[id] = fork();
@@ -112,17 +110,19 @@ void add_threads(t_data *data)
 			philosopher(&data->philos[id]);
 		id++;
 	}
-	if (data->n_t_m_eat)
-	{
-		data->n_times = data->n_t_m_eat;
-		pthread_create(&time_eat, NULL, check_eat_times, data);
-	}
+	// printf("%d\n\n\n\n\n\n\n", data->wait);
+	// if (data->n_t_m_eat)
+	// {
+	// 	data->n_times = data->n_t_m_eat;
+	// 	pthread_create(&time_eat, NULL, check_eat_times, data);
+	// }
 	while (waitpid(0, NULL, 0) > 0)
 	{
 		j = 0;
-		while(j < data->total_ph)
+		while (j < data->total_ph)
 			kill(data->pid[j++], SIGKILL);
 		free(data->pid);
+		sem_post(data->lock);
 		exit(0);
 	}
 }

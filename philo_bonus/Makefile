@@ -13,7 +13,7 @@ END = "\033[0m"
 
 OSRC=$(SRC:.c=.o)
 
-%.o: %.c philo.h
+%.o: %.c philo_bonus.h
 	@echo $(ORG)Compiling [$@]...$(END)
 	@cc $(CFLAGS) -c -o $@ $<
 
