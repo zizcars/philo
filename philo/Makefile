@@ -4,7 +4,8 @@ SRC =	main.c \
 		convert_int.c \
 		set_default.c \
 		thread_managment.c \
-		routine.c
+		routine.c \
+		philo_tooles.c
  
 GRN = "\033[32m"
 ORG = "\033[34m"
@@ -22,7 +23,6 @@ all: $(NAME)
 
 $(NAME): $(OSRC) 
 	@cc $(CFLAGS) $(OSRC) -o $(NAME)
-# @echo $(GRN)DONE$(END)
 
 clean:
 	@echo $(RED)Remove [$(OSRC)$(BOSRC)]$(END)

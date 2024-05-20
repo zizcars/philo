@@ -6,67 +6,55 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/20 12:36:03 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/20 15:46:31 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long get_time(void)
+void	monitor(t_data *data)
 {
-	struct timeval time_now;
+	int	id;
 
-	if (gettimeofday(&time_now, NULL))
-		return (ERROR);
-	return (time_now.tv_sec * 1000 + time_now.tv_usec / 1000);
-}
-
-void print_message(char *message, t_philo *philo)
-{
-	pthread_mutex_lock(&philo->data->lock);
-	if (philo->data->dead != DIED)
-		printf("%ld %d %s\n", get_time() - philo->data->start_t, philo->id, message);
-	pthread_mutex_unlock(&philo->data->lock);
-}
-
-// void mssleep(int time_ms)
-// {
-// 	long start, end;
-// 	long elapsed;
-// 	start = get_time();
-//     usleep(7 * (time_ms / 8) * 1000);
-// 	end = get_time();
-//     time_ms = time_ms - (end - start);
-// 	while (time_ms > 0)
-// 	{
-// 		start = get_time();
-// 		usleep(100);
-// 		// if (check_death(philo) == DIED)
-// 		// 	return (DIED);
-// 		end = get_time();
-// 		elapsed = end - start;
-// 		time_ms -= elapsed;
-// 	}
-// return (LIFE);
-// }
-
-void mssleep(int time_to_sleep, t_philo *philo)
-{
-	long start;
-
-	start = get_time();
-	while ((get_time() - start) < time_to_sleep)
+	while (1)
 	{
-		usleep(100);
-		if (check_death(philo) == DIED)
-			return;
+		id = 0;
+		while (id < data->total_ph)
+		{
+			if (data->n_t_m_eat)
+			{
+				if (check_n_times(&data->philos[id], 0) == DIED)
+					return ;
+			}
+			if (get_time() - update_last_meal(&data->philos[id], 0) \
+				>= data->t_die)
+			{
+				pthread_mutex_lock(&data->lock);
+				data->dead = DIED;
+				printf("\e[31m%ld %d is died\n", \
+					get_time() - data->start_t, data->philos[id].id);
+				pthread_mutex_unlock(&data->lock);
+				return ;
+			}
+			id++;
+		}
 	}
 }
 
-void *philosopher(void *arg)
+void	print_message(char *message, t_philo *philo)
 {
-	t_philo *philo = (t_philo *)arg;
+	pthread_mutex_lock(&philo->data->lock);
+	if (philo->data->dead != DIED)
+		printf("%ld %d %s\n", \
+			get_time() - philo->data->start_t, philo->id, message);
+	pthread_mutex_unlock(&philo->data->lock);
+}
 
+void	*philosopher(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
 	while (check_death(philo) == LIFE && philo->n_times != 0)
 	{
 		if (philo->state == go_eat)
@@ -77,10 +65,10 @@ void *philosopher(void *arg)
 	return (NULL);
 }
 
-int add_threads(t_data *data)
+int	add_threads(t_data *data)
 {
-	int id;
-	pthread_t *threads;
+	int			id;
+	pthread_t	*threads;
 
 	threads = malloc(sizeof(pthread_t) * (data->total_ph));
 	if (threads == NULL)
@@ -103,9 +91,9 @@ int add_threads(t_data *data)
 	return (GOOD);
 }
 
-int join_free(t_data *data, pthread_t *threads)
+int	join_free(t_data *data, pthread_t *threads)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < data->total_ph)

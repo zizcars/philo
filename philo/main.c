@@ -6,15 +6,15 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/20 12:59:57 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/20 15:37:55 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void ft_error(char *error_massege)
+void	ft_error(char *error_massege)
 {
-	int len;
+	int	len;
 
 	len = 0;
 	while (error_massege[len])
@@ -22,21 +22,9 @@ void ft_error(char *error_massege)
 	write(STDERR, error_massege, len);
 }
 
-int check_stop(t_data *data)
+void	clean_all(t_data *data)
 {
-	pthread_mutex_lock(&data->lock_n_times);
-	if (data->stop == 0)
-	{
-		pthread_mutex_unlock(&data->lock_n_times);
-		return (-1);
-	}
-	pthread_mutex_unlock(&data->lock_n_times);
-	return (GOOD);
-}
-
-void clean_all(t_data *data)
-{
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < data->total_ph)
@@ -51,16 +39,39 @@ void clean_all(t_data *data)
 	free(data->philos);
 }
 
-void leaks(void)
+int	check_n_times(t_philo *philo, int update)
 {
-	system("leaks philo");
+	pthread_mutex_lock(&philo->n_times_mtx);
+	if (update)
+		philo->n_times--;
+	else
+	{
+		if (philo->n_times == 0)
+		{
+			pthread_mutex_unlock(&philo->n_times_mtx);
+			return (DIED);
+		}
+	}
+	pthread_mutex_unlock(&philo->n_times_mtx);
+	return (LIFE);
 }
 
-int main(int ac, char **av)
+int	check_death(t_philo *philo)
 {
-	t_data data;
+	pthread_mutex_lock(&philo->data->lock);
+	if (philo->data->dead == DIED)
+	{
+		pthread_mutex_unlock(&philo->data->lock);
+		return (DIED);
+	}
+	pthread_mutex_unlock(&philo->data->lock);
+	return (LIFE);
+}
 
-	// atexit(leaks);
+int	main(int ac, char **av)
+{
+	t_data	data;
+
 	if (ac < 5 || ac > 6)
 	{
 		ft_error("Error: incorrect number of arguments\n");

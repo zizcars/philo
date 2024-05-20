@@ -6,13 +6,13 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/20 12:49:21 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/20 15:43:28 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int set_default(t_data *data, int ac, char **av)
+static int	set_numbers(t_data *data, int ac, char **av)
 {
 	data->total_ph = convert_int(av[1]);
 	if (data->total_ph == ERROR)
@@ -39,43 +39,39 @@ int set_default(t_data *data, int ac, char **av)
 	return (GOOD);
 }
 
-int data_alloc(t_data *data)
+static int	data_alloc(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	data->forks = malloc(data->total_ph * sizeof(pthread_mutex_t *));
 	if (data->forks == NULL)
+		return (ERROR);
+	data->philos = malloc(data->total_ph * sizeof(t_philo));
+	if (data->philos == NULL)
 		return (ERROR);
 	while (i < data->total_ph)
 	{
 		data->forks[i] = malloc(sizeof(pthread_mutex_t));
 		if (data->forks[i] == NULL)
 			return (ERROR);
+		if (i % 2 == 0)
+			data->philos[i].state = go_eat;
+		else
+			data->philos[i].state = go_sleep;
 		i++;
 	}
-	data->philos = malloc(data->total_ph * sizeof(t_philo));
-	if (data->philos == NULL)
-		return (ERROR);
 	return (GOOD);
 }
 
-int set_id_forks(t_data *data)
+static int	set_philo_info(t_data *data)
 {
-	int id;
+	int	id;
 
 	id = 0;
-	if (pthread_mutex_init(&data->lock, NULL))
-		return (ERROR);
-	if (pthread_mutex_init(&data->lock_n_times, NULL))
-		return (ERROR);
 	while (id < data->total_ph)
 	{
 		data->philos[id].id = id + 1;
-		if (id % 2 == 0)
-			data->philos[id].state = go_eat;
-		else
-			data->philos[id].state = go_sleep;
 		if (data->n_t_m_eat == 0)
 			data->philos[id].n_times = -1;
 		else
@@ -92,11 +88,15 @@ int set_id_forks(t_data *data)
 	return (GOOD);
 }
 
-void gave_forks(t_data *data)
+static int	gave_forks(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
+	if (pthread_mutex_init(&data->lock, NULL))
+		return (ERROR);
+	if (pthread_mutex_init(&data->lock_n_times, NULL))
+		return (ERROR);
 	while (i < data->total_ph - 1)
 	{
 		(data->philos[i]).r_fork = data->forks[i];
@@ -107,11 +107,12 @@ void gave_forks(t_data *data)
 	(data->philos[i]).r_fork = data->forks[i];
 	(data->philos[i]).data = data;
 	(data->philos[i]).l_fork = data->forks[0];
+	return (GOOD);
 }
 
-int set_init(t_data *data, int ac, char **av)
+int	set_init(t_data *data, int ac, char **av)
 {
-	if (set_default(data, ac, av) == ERROR)
+	if (set_numbers(data, ac, av) == ERROR)
 	{
 		ft_error("Error: Incorrect number\n");
 		return (ERROR);
@@ -121,11 +122,10 @@ int set_init(t_data *data, int ac, char **av)
 		ft_error("Error: Allocation failed\n");
 		return (ERROR);
 	}
-	if (set_id_forks(data) == ERROR)
+	if (set_philo_info(data) == ERROR || gave_forks(data) == ERROR)
 	{
 		ft_error("Error: pthread_mutex_init crashed\n");
 		return (ERROR);
 	}
-	gave_forks(data);
 	return (GOOD);
 }

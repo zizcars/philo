@@ -6,13 +6,13 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 11:36:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/13 12:31:22 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/20 15:05:14 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void skip_space(char **str)
+void	skip_space(char **str)
 {
 	if (str == NULL || *str == NULL)
 		return ;
@@ -20,7 +20,7 @@ void skip_space(char **str)
 		(*str)++;
 }
 
-int convert_int(char *str)
+int	convert_int(char *str)
 {
 	int	number;
 
@@ -40,4 +40,3 @@ int convert_int(char *str)
 		return (ERROR);
 	return (number);
 }
-
