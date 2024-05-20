@@ -1,24 +1,36 @@
-CFLAGS = -Wall -Wextra -Werror # -fsanitize=thread -g
+CFLAGS = -Wall -Wextra -Werror# -fsanitize=thread -g
 NAME = philo_bonus
-
-BSRC=	main_bonus.c \
-		philo_tooles_bonus.c \
-		create_table_bonus.c \
-		manage_forks_bonus.c \
+SRC =	main_bonus.c \
+		convert_int_bonus.c \
+		set_default_bonus.c \
+		thread_managment_bonus.c \
 		routine_bonus.c
+ 
+GRN = "\033[32m"
+ORG = "\033[34m"
+RED = "\033[31m"
+END = "\033[0m"
 
-OSRC=$(BSRC:.c=.o)
+OSRC=$(SRC:.c=.o)
 
-all : $(NAME)
+%.o: %.c philo.h
+	@echo $(ORG)Compiling [$@]...$(END)
+	@cc $(CFLAGS) -c -o $@ $<
 
-$(NAME): $(OSRC) philo_bonus.h
-	cc $(CFLAGS) $(OSRC) -o $(NAME)
+
+all: $(NAME)
+
+$(NAME): $(OSRC) 
+	@cc $(CFLAGS) $(OSRC) -o $(NAME)
+# @echo $(GRN)DONE$(END)
 
 clean:
-	rm -f $(OSRC)
+	@echo $(RED)Remove [$(OSRC)$(BOSRC)]$(END)
+	@rm -f $(OSRC) $(BOSRC)
 
 fclean: clean
-	rm -f $(NAME)
+	@echo $(RED)Remove [$(NAME)$(BNAME)]$(END)
+	@rm -f $(NAME) $(BNAME)
 
 re: fclean all
 

@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/15 12:00:06 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/20 12:59:57 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,6 @@ void ft_error(char *error_massege)
 	while (error_massege[len])
 		len++;
 	write(STDERR, error_massege, len);
-}
-
-int check_n_times(t_data *data)
-{
-	pthread_mutex_lock(&data->lock_n_times);
-	if (data->n_times <= 0)
-	{
-		pthread_mutex_unlock(&data->lock_n_times);
-		return (-1);
-	}
-	pthread_mutex_unlock(&data->lock_n_times);
-	return (GOOD);
 }
 
 int check_stop(t_data *data)
