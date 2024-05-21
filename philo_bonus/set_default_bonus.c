@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/20 20:28:55 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/21 11:36:50 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,13 @@ int set_id_forks(t_data *data)
 	if (data->lock == SEM_FAILED)
 	{
 		ft_error("Can't create semaphone with name lock\n");
+		return (ERROR);
+	}
+	sem_unlink("print");
+	data->print = sem_open("print", O_CREAT, 0644, 1);
+	if (data->print == SEM_FAILED)
+	{
+		ft_error("Can't create semaphone with name print\n");
 		return (ERROR);
 	}
 	// sem_unlink("wait");

@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/20 17:43:54 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/21 16:53:05 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,10 @@ typedef struct s_philo
 {
 	int id;
 	long last_meal;
-	long start;
+	long start_t;
+	long end_eating;
+	long end_sleeping;
+	long end_thinking;
 	t_state state;
 	// pthread_mutex_t write;
 	struct s_data *data;
@@ -61,7 +64,8 @@ typedef struct s_data
 	int n_times;
 	sem_t *forks;
 	sem_t *lock;
-	int wait;
+	sem_t *print;
+	sem_t *start_sem;
 	pid_t *pid;
 }	t_data;
 
@@ -83,7 +87,7 @@ void add_threads(t_data *data);
 void philosopher(t_philo *philo);
 void mssleep(int time_ms);
 void sleeping(t_philo *philo);
-void print_message(char *message, t_philo *philo);
+void print_message(char *message, t_philo *philo, long print_time);
 // void join_free(t_data *data ,pid_t *pid);
 
 /*-----------------routine-----------*/

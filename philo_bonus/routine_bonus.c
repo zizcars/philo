@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 14:27:46 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/20 17:00:50 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/21 18:44:39 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,32 +14,43 @@
 
 void sleeping(t_philo *philo)
 {
-	print_message("is sleeping", philo);
+	print_message("is sleeping", philo, get_time());
 	mssleep(philo->data->t_sleep);
+	// philo->end_sleeping = get_time();
 	philo->state = go_eat;
 }
 
 void eating(t_philo *philo)
 {
-	print_message("is thinking", philo);
+	// long start;
+
+	print_message("is thinking", philo, get_time());
 	take_forks(philo);
-	print_message("is eating", philo);
+	// philo->end_thinking = get_time();/
+	// start = get_time();
+	print_message("is eating", philo, get_time());
+	// start = get_time();
 	philo->last_meal = get_time();
 	mssleep(philo->data->t_eat);
+	// philo->end_eating = get_time();
+	// printf("%ld\n", get_time() - start);
+	// exit(0);
 	put_forks(philo);
 }
 
 void take_forks(t_philo *philo)
 {
 	sem_wait(philo->data->forks);
-	print_message("has taken a fork", philo);
+	print_message("has taken a fork", philo, get_time());
 	if (philo->data->total_ph == 1)
 	{
+		while (get_time() - philo->last_meal < philo->data->t_die);
 		sem_post(philo->data->forks);
-		exit(GOOD);
+		printf("\e[31m%ld %d is died\n\e[0m", get_time() - philo->data->start_t, philo->id);
+		exit(DIED);
 	}
 	sem_wait(philo->data->forks);
-	print_message("has taken a fork", philo);
+	print_message("has taken a fork", philo, get_time());
 }
 
 void put_forks(t_philo *philo)
