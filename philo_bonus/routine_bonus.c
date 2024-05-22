@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 14:27:46 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/22 11:41:13 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/22 16:43:16 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,12 @@ void eating(t_philo *philo)
 
 	print_message("is thinking", philo, get_time());
 	take_forks(philo);
-	// philo->end_thinking = get_time();/
-	// start = get_time();
 	print_message("is eating", philo, get_time());
-	// start = get_time();
-	philo->last_meal = get_time();
-	// check_last_meal(philo, 1);
+	check_last_meal(philo, 1);
 	mssleep(philo->data->t_eat);
-	// philo->end_eating = get_time();
-	// printf("%ld\n", get_time() - start);
-	// exit(0);
+	if (philo->data->n_t_m_eat)
+		philo->n_times_eat--;
+	// check_n_times(philo, 1);
 	put_forks(philo);
 }
 
@@ -61,22 +57,7 @@ void put_forks(t_philo *philo)
 	philo->state = go_sleep;
 }
 
-// int monitor(t_data *data)
+// long check_n_times(t_philo *philo, int update)
 // {
-// 	int i;
-
-// 	while (1)
-// 	{
-// 		i = 0;
-// 		while (i < data->total_ph)
-// 		{
-// 			if (get_time() - data->philos[i].last_meal > data->t_die)
-// 			{
-// 				printf("\e[31m%ld %d is died\n\e[0m", get_time() - data->start_t, data->philos[i].id);
-// 				return (DIED);
-// 			}
-// 			i++;
-// 		}
-// 	}
-// 	return (LIFE);
+		
 // }

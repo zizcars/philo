@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/22 13:04:52 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/22 17:06:03 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ long check_last_meal(t_philo *philo, int update)
 	long last_meal;
 
 	last_meal = -1;
-	sem_wait(philo->data->sem_last_meal);
+	sem_wait(philo->sem_last_meal);
 	if (update)
 		philo->last_meal = get_time();
 	else
 		last_meal = philo->last_meal;
-	sem_post(philo->data->sem_last_meal);
+	sem_post(philo->sem_last_meal);
 	return (last_meal);
 }
 
@@ -62,51 +62,38 @@ void *death(void *arg)
 	philo = (t_philo *)arg;
 	while (1)
 	{
+		sem_wait(philo->data->sem_fast);
 		start = get_time();
-		sem_wait(philo->data->sem_last_meal);
-		if (philo->last_meal != -1 && start - philo->last_meal >= philo->data->t_die)
+		if (philo->last_meal != -1 && start - check_last_meal(philo, 0) >= philo->data->t_die)
 		{
-			sem_post(philo->data->sem_last_meal);
 			sem_wait(philo->data->lock);
 			sem_wait(philo->data->print);
+			sem_post(philo->data->sem_fast);
 			printf("\e[31m%ld %d is died\n", start - philo->data->start_t, philo->id);
 			exit(DIED);
 		}
-		sem_post(philo->data->sem_last_meal);
-		// sem_post(philo->data->print);
+		sem_post(philo->data->sem_fast);
 	}
 	return (NULL);
 }
-// void check_death(t_philo *philo)
-// {
-// 	long start;
-
-// 	start = get_time();
-// 	if (start - philo->last_meal >= philo->data->t_die)
-// 	{
-// 		sem_wait(philo->data->lock);
-// 		sem_wait(philo->data->print);
-// 		printf("\e[31m%ld %d is died\n\e[0m", start - philo->data->start_t, philo->id);
-// 		exit(DIED);
-// 	}
-// }
 
 void philosopher(t_philo *philo)
 {
 	pthread_t checker;
 	int one_time = 1;
 
-	// check_last_meal(philo, 1);
 	philo->last_meal = -1;
+	sem_unlink("sem_last_meal");
+	philo->sem_last_meal = sem_open("sem_last_meal",O_CREAT  | O_EXCL, 0644, 1);
+	if (philo->sem_last_meal == SEM_FAILED)
+		exit(ERROR);
 	pthread_create(&checker, NULL, death, philo);
-	while (1)
+	while (philo->n_times_eat != 0)
 	{
 		sem_wait(philo->data->sem_start);
 		if (one_time)
 		{
-			sem_wait(philo->data->sem_last_meal);
-			philo->last_meal = get_time();
-			sem_post(philo->data->sem_last_meal);
+			check_last_meal(philo, 1);
 			one_time = 0;
 		}
 		if (philo->state == go_eat)
@@ -115,26 +102,8 @@ void philosopher(t_philo *philo)
 			sleeping(philo);
 		sem_post(philo->data->sem_start);
 	}
+	exit(0);
 }
-
-// void *check_eat_times(void *arg)
-// {
-// 	t_data *data;
-// 	int j;
-
-// 	data = (t_data *)arg;
-// 	while (data->n_times)
-// 	{
-// 		sem_wait(data->lock);
-// 		data->n_times--;
-// 		sem_post(data->lock);
-// 	}
-// 	j = 0;
-// 	while (j < data->total_ph)
-// 		kill(data->pid[j++], SIGKILL);
-// 	free(data->pid);
-// 	exit(0);
-// }
 
 void add_threads(t_data *data)
 {
@@ -145,13 +114,6 @@ void add_threads(t_data *data)
 	if (data->pid == NULL)
 		exit(ERROR);
 	id = 0;
-	// sem_unlink("sem_process_count");
-	// sem_t *sem_process_count = sem_open("sem_process_count", O_CREAT, 0644, 0);
-	sem_unlink("sem_start");
-	data->sem_start = sem_open("sem_start", O_CREAT, 0644, 0);
-	if (data->sem_start == SEM_FAILED)
-		exit(ERROR);
-
 	data->start_t = get_time();
 	while (id < data->total_ph)
 	{
@@ -168,23 +130,16 @@ void add_threads(t_data *data)
 		{
 			philosopher(&data->philos[id]);
 		}
-		// usleep(50);
 		id++;
 	}
-	// usleep(800);
 	while (id--)
-	{
 		sem_post(data->sem_start);
-		// usleep(50);
-	}
 	while (waitpid(0, NULL, 0) > 0)
 	{
 		j = 0;
 		while (j < data->total_ph)
 			kill(data->pid[j++], SIGKILL);
 		free(data->pid);
-		// sem_post(data->lock);
-		// sem_post(data->print);
 		sem_close(data->lock);
 		sem_close(data->print);
 		sem_unlink("sem_process_count");

@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/22 12:46:54 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/22 17:06:14 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,11 @@ typedef struct s_philo
 {
 	int id;
 	long last_meal;
-	long start_t;
-	long end_eating;
-	long end_sleeping;
-	long end_thinking;
+	int n_times_eat;
 	t_state state;
-	// pthread_mutex_t write;
 	struct s_data *data;
+	sem_t *sem_last_meal;
+	sem_t *n_times;
 } t_philo;
 
 typedef struct s_data
@@ -58,7 +56,6 @@ typedef struct s_data
 	int t_sleep;
 	int n_t_m_eat;
 	int dead;
-	// int stop;
 	long start_t;
 	t_philo *philos;
 	int n_times;
@@ -66,7 +63,7 @@ typedef struct s_data
 	sem_t *lock;
 	sem_t *print;
 	sem_t *start_sem;
-	sem_t *sem_last_meal;
+	sem_t *sem_fast;
 	sem_t *sem_start;
 	pid_t *pid;
 }	t_data;
