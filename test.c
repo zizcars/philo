@@ -106,3 +106,44 @@
 //     printf("%ld\n", get_time() - start );
 // }
 
+#include <pthread.h>
+#include <semaphore.h>
+#include <stdio.h>
+sem_t mutex; // Binary semaphore to protect the critical section
+int shared_resource = 0;
+
+void *thread_function(void *args)
+{
+    for (int i = 0; i < 10; i++)
+    {
+        // Acquire the semaphore
+        sem_wait(&mutex);
+
+        // Critical section: Access the shared resource
+        shared_resource++;
+
+        // Release the semaphore
+        sem_post(&mutex);
+    }
+
+    return NULL;
+}
+
+int main()
+{
+    pthread_t threads[10];
+    sem_init(&mutex, 0, 1); // Initialize the semaphore with a value of 1
+    for (int i = 0; i < 10; i++)
+    {
+        pthread_create(&threads[i], NULL, thread_function, NULL);
+    }
+
+    for (int i = 0; i < 10; i++)
+    {
+        pthread_join(threads[i], NULL);
+    }
+
+    printf("Final value of the shared resource: %d\n", shared_resource);
+    sem_destroy(&mutex); // Destroy the semaphore
+    return 0;
+}

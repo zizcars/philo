@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/21 18:47:34 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/22 13:04:52 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,21 @@ void mssleep(int time_ms)
 
 	start = get_time();
 	while (get_time() - start < time_ms)
-		usleep(100);
+		usleep(85);
+}
+
+long check_last_meal(t_philo *philo, int update)
+{
+	long last_meal;
+
+	last_meal = -1;
+	sem_wait(philo->data->sem_last_meal);
+	if (update)
+		philo->last_meal = get_time();
+	else
+		last_meal = philo->last_meal;
+	sem_post(philo->data->sem_last_meal);
+	return (last_meal);
 }
 
 void *death(void *arg)
@@ -49,36 +63,57 @@ void *death(void *arg)
 	while (1)
 	{
 		start = get_time();
-		if (start - philo->last_meal >= philo->data->t_die)
+		sem_wait(philo->data->sem_last_meal);
+		if (philo->last_meal != -1 && start - philo->last_meal >= philo->data->t_die)
 		{
+			sem_post(philo->data->sem_last_meal);
 			sem_wait(philo->data->lock);
 			sem_wait(philo->data->print);
-			printf("\e[31m%ld %d is died\n\e[0m", start - philo->data->start_t, philo->id);
+			printf("\e[31m%ld %d is died\n", start - philo->data->start_t, philo->id);
 			exit(DIED);
 		}
+		sem_post(philo->data->sem_last_meal);
+		// sem_post(philo->data->print);
 	}
 	return (NULL);
 }
+// void check_death(t_philo *philo)
+// {
+// 	long start;
+
+// 	start = get_time();
+// 	if (start - philo->last_meal >= philo->data->t_die)
+// 	{
+// 		sem_wait(philo->data->lock);
+// 		sem_wait(philo->data->print);
+// 		printf("\e[31m%ld %d is died\n\e[0m", start - philo->data->start_t, philo->id);
+// 		exit(DIED);
+// 	}
+// }
 
 void philosopher(t_philo *philo)
 {
 	pthread_t checker;
 	int one_time = 1;
 
-	// philo->end_sleeping = get_time();
-	// philo->end_eating = get_time();
-	philo->last_meal = get_time();
+	// check_last_meal(philo, 1);
+	philo->last_meal = -1;
+	pthread_create(&checker, NULL, death, philo);
 	while (1)
 	{
+		sem_wait(philo->data->sem_start);
+		if (one_time)
+		{
+			sem_wait(philo->data->sem_last_meal);
+			philo->last_meal = get_time();
+			sem_post(philo->data->sem_last_meal);
+			one_time = 0;
+		}
 		if (philo->state == go_eat)
 			eating(philo);
 		else
 			sleeping(philo);
-		if (one_time)
-		{
-			pthread_create(&checker, NULL, death, philo);
-			one_time = 0;
-		}
+		sem_post(philo->data->sem_start);
 	}
 }
 
@@ -110,16 +145,11 @@ void add_threads(t_data *data)
 	if (data->pid == NULL)
 		exit(ERROR);
 	id = 0;
-	int wait;
-
-	wait = 0;
-	// data->wait = 0;
-	// sem_init(&start_sem, 0, 0);
-	sem_unlink("sem_start");
 	// sem_unlink("sem_process_count");
 	// sem_t *sem_process_count = sem_open("sem_process_count", O_CREAT, 0644, 0);
-	sem_t *sem_start = sem_open("sem_start", O_CREAT, 0644, 0);
-	if (sem_start == SEM_FAILED)
+	sem_unlink("sem_start");
+	data->sem_start = sem_open("sem_start", O_CREAT, 0644, 0);
+	if (data->sem_start == SEM_FAILED)
 		exit(ERROR);
 
 	data->start_t = get_time();
@@ -128,21 +158,25 @@ void add_threads(t_data *data)
 		data->pid[id] = fork();
 		if (data->pid[id] == -1)
 		{
+			j = 0;
+			while (j < id)
+				kill(data->pid[j++], SIGKILL);
 			free(data->pid);
 			exit(ERROR);
 		}
 		else if (data->pid[id] == 0)
 		{
-			// sem_post(sem_process_count);
-			// print_message("is thinking", &data->philos[id]);
-			sem_wait(sem_start);
 			philosopher(&data->philos[id]);
 		}
+		// usleep(50);
 		id++;
 	}
 	// usleep(800);
 	while (id--)
-		sem_post(sem_start);
+	{
+		sem_post(data->sem_start);
+		// usleep(50);
+	}
 	while (waitpid(0, NULL, 0) > 0)
 	{
 		j = 0;

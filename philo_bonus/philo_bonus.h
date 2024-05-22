@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/21 16:53:05 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/22 12:46:54 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ typedef struct s_data
 	sem_t *lock;
 	sem_t *print;
 	sem_t *start_sem;
+	sem_t *sem_last_meal;
+	sem_t *sem_start;
 	pid_t *pid;
 }	t_data;
 
@@ -74,7 +76,7 @@ int set_default(t_data *data, int ac, char **av);
 int data_alloc(t_data *data);
 int set_id_forks(t_data *data);
 int set_init(t_data *data, int ac, char **av);
-
+long check_last_meal(t_philo *philo, int update);
 /*-----------------convert_int-----------*/
 int convert_int(char *str);
 
@@ -94,7 +96,7 @@ void print_message(char *message, t_philo *philo, long print_time);
 void eating(t_philo *philo);
 void take_forks(t_philo *philo);
 void put_forks(t_philo *philo);
-int check_death(t_philo *philo);
+void check_death(t_philo *philo);
 // void *died(void *arg);
 // int monitor(t_data *data);
 // int check_n_times(t_data *data);

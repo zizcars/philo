@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 14:27:46 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/21 18:44:39 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/22 11:41:13 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void eating(t_philo *philo)
 	print_message("is eating", philo, get_time());
 	// start = get_time();
 	philo->last_meal = get_time();
+	// check_last_meal(philo, 1);
 	mssleep(philo->data->t_eat);
 	// philo->end_eating = get_time();
 	// printf("%ld\n", get_time() - start);
