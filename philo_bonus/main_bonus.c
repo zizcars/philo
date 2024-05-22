@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/20 16:32:30 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/22 19:46:32 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,25 @@ void ft_error(char *error_massege)
 	len = 0;
 	while (error_massege[len])
 		len++;
-	write(STDERR, error_massege, len);
+	write(STDERR_FILENO, error_massege, len);
+}
+
+void clean(t_data *data)
+{
+	free(data->pid);
+	data->pid = NULL;
+	free(data->philos);
+	data->philos = NULL;
+	sem_close(data->forks);
+	sem_unlink("forks");
+	sem_close(data->lock);
+	sem_unlink("lock");
+	sem_close(data->print);
+	sem_unlink("print");
+	sem_close(data->sem_fast);
+	sem_unlink("sem_fast");
+	sem_close(data->sem_start);
+	sem_unlink("sem_start");
 }
 
 void leaks(void)
@@ -35,14 +53,9 @@ int main(int ac, char **av)
 	if (ac < 5 || ac > 6)
 	{
 		ft_error("Error: incorrect number of arguments\n");
-		return (1);
+		return (EXIT_FAILURE);
 	}
-	if (set_init(&data, ac, av) == ERROR)
-		return (1);
-	add_threads(&data);
-	// {
-	// 	clean_all(&data);
-	// 	return (1);
-	// }
-	// clean_all(&data);
+	set_numbers(&data, ac, av);
+	set_philo_info(&data);
+	creat_philos(&data);
 }

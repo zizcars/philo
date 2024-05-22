@@ -1,7 +1,7 @@
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror# -fsanitize=address -g
 NAME = philo_bonus
 SRC =	main_bonus.c \
-		convert_int_bonus.c \
+		philo_tooles_bonus.c \
 		set_default_bonus.c \
 		thread_managment_bonus.c \
 		routine_bonus.c

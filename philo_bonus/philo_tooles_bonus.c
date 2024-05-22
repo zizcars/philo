@@ -1,33 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   convert_int_bonus.c                                :+:      :+:    :+:   */
+/*   philo_tooles_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 11:36:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/15 12:47:31 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/22 19:51:19 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void skip_space(char **str)
+static void skip_space(char **str)
 {
 	if (str == NULL || *str == NULL)
-		return ;
+		return;
 	while (**str && (**str == ' ' || **str == '	'))
 		(*str)++;
 }
 
 int convert_int(char *str)
 {
-	int	number;
+	int number;
 
 	number = 0;
 	skip_space(&str);
 	if (str == NULL || *str == '-' || *str == '\0')
-		return (ERROR);
+	{
+		ft_error("Error: Incorrect number\n");
+		exit(EXIT_FAILURE);
+	}
 	else if (*str == '+')
 		str++;
 	while (*str >= '0' && *str <= '9')
@@ -37,7 +40,33 @@ int convert_int(char *str)
 	}
 	skip_space(&str);
 	if (*str != '\0' || number == 0)
-		return (ERROR);
+	{
+		ft_error("Error: Incorrect number\n");
+		exit(EXIT_FAILURE);
+	}
 	return (number);
 }
 
+long get_time(void)
+{
+	struct timeval time_now;
+
+	gettimeofday(&time_now, NULL);
+	return (time_now.tv_sec * 1000 + time_now.tv_usec / 1000);
+}
+
+void print_message(char *message, t_philo *philo, long print_time)
+{
+	sem_wait(philo->data->print);
+	printf("%ld %d %s\n", print_time - philo->data->start_t, philo->id, message);
+	sem_post(philo->data->print);
+}
+
+void mssleep(int time_ms)
+{
+	long start;
+
+	start = get_time();
+	while (get_time() - start < time_ms)
+		usleep(85);
+}
