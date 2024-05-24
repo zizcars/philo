@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=thread -g
+CFLAGS = -Wall -Wextra -Werror
 NAME = philo
 SRC =	main.c \
 		convert_int.c \
@@ -7,7 +7,6 @@ SRC =	main.c \
 		routine.c \
 		philo_tooles.c
  
-GRN = "\033[32m"
 ORG = "\033[34m"
 RED = "\033[31m"
 END = "\033[0m"

@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/20 15:46:31 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/24 11:35:25 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ void	monitor(t_data *data)
 				if (check_n_times(&data->philos[id], 0) == DIED)
 					return ;
 			}
-			if (get_time() - update_last_meal(&data->philos[id], 0) \
-				>= data->t_die)
+			if (get_time() - last_meal(&data->philos[id], 0) >= data->t_die)
 			{
 				pthread_mutex_lock(&data->lock);
 				data->dead = DIED;
@@ -37,6 +36,7 @@ void	monitor(t_data *data)
 				return ;
 			}
 			id++;
+			usleep(800);
 		}
 	}
 }
@@ -77,7 +77,7 @@ int	add_threads(t_data *data)
 	data->start_t = get_time();
 	while (id < data->total_ph)
 	{
-		update_last_meal(&data->philos[id], 1);
+		last_meal(&data->philos[id], 1);
 		if (pthread_create(&threads[id], NULL, philosopher, &data->philos[id]))
 		{
 			free(threads);

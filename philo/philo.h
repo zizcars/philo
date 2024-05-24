@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 16:21:38 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/20 15:25:44 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/24 15:12:16 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@
 # define LIFE 0
 # define ERROR -1
 # define GOOD 0
-
-# define STDERR 2
 
 typedef enum s_state
 {
@@ -79,6 +77,6 @@ void	take_forks(t_philo *philo);
 void	put_forks(t_philo *philo);
 int		check_death(t_philo *philo);
 void	monitor(t_data *data);
-long	update_last_meal(t_philo *philo, int write);
+long	last_meal(t_philo *philo, int write);
 
 #endif

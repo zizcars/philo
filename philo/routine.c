@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 14:27:46 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/20 15:40:56 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/24 11:35:33 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	sleeping(t_philo *philo)
 	philo->state = go_eat;
 }
 
-long	update_last_meal(t_philo *philo, int write)
+long	last_meal(t_philo *philo, int write)
 {
 	long	last_meal;
 
@@ -46,7 +46,7 @@ void	eating(t_philo *philo)
 	mssleep(philo->data->t_eat, philo);
 	if (philo->data->n_t_m_eat != 0)
 		check_n_times(philo, 1);
-	update_last_meal(philo, 1);
+	last_meal(philo, 1);
 	put_forks(philo);
 }
 

@@ -6,15 +6,15 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/22 19:46:32 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/24 15:39:54 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void ft_error(char *error_massege)
+void	ft_error(char *error_massege)
 {
-	int len;
+	int	len;
 
 	len = 0;
 	while (error_massege[len])
@@ -22,7 +22,7 @@ void ft_error(char *error_massege)
 	write(STDERR_FILENO, error_massege, len);
 }
 
-void clean(t_data *data)
+void	clean(t_data *data)
 {
 	free(data->pid);
 	data->pid = NULL;
@@ -40,16 +40,10 @@ void clean(t_data *data)
 	sem_unlink("sem_start");
 }
 
-void leaks(void)
+int	main(int ac, char **av)
 {
-	system("leaks philo_bonus");
-}
+	t_data	data;
 
-int main(int ac, char **av)
-{
-	t_data data;
-
-	// atexit(leaks);
 	if (ac < 5 || ac > 6)
 	{
 		ft_error("Error: incorrect number of arguments\n");

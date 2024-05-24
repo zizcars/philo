@@ -6,13 +6,13 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 14:10:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/22 19:26:57 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/24 15:41:23 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void set_numbers(t_data *data, int ac, char **av)
+void	set_numbers(t_data *data, int ac, char **av)
 {
 	data->total_ph = convert_int(av[1]);
 	data->t_die = convert_int(av[2]);
@@ -38,7 +38,7 @@ void set_numbers(t_data *data, int ac, char **av)
 	}
 }
 
-void creat_sem(sem_t **sem, char *sem_name, int n)
+void	creat_sem(sem_t **sem, char *sem_name, int n)
 {
 	sem_unlink(sem_name);
 	*sem = sem_open(sem_name, O_CREAT | O_EXCL, 0644, n);
@@ -49,9 +49,9 @@ void creat_sem(sem_t **sem, char *sem_name, int n)
 	}
 }
 
-void set_philo_info(t_data *data)
+void	set_philo_info(t_data *data)
 {
-	int id;
+	int	id;
 
 	id = 0;
 	creat_sem(&data->forks, "forks", data->total_ph);

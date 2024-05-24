@@ -6,23 +6,23 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 11:36:49 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/22 19:51:19 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/24 15:40:58 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-static void skip_space(char **str)
+static void	skip_space(char **str)
 {
 	if (str == NULL || *str == NULL)
-		return;
+		return ;
 	while (**str && (**str == ' ' || **str == '	'))
 		(*str)++;
 }
 
-int convert_int(char *str)
+int	convert_int(char *str)
 {
-	int number;
+	int	number;
 
 	number = 0;
 	skip_space(&str);
@@ -47,24 +47,24 @@ int convert_int(char *str)
 	return (number);
 }
 
-long get_time(void)
+long	get_time(void)
 {
-	struct timeval time_now;
+	struct timeval	time_now;
 
 	gettimeofday(&time_now, NULL);
 	return (time_now.tv_sec * 1000 + time_now.tv_usec / 1000);
 }
 
-void print_message(char *message, t_philo *philo, long print_time)
+void	print_message(char *message, t_philo *philo, long print_time)
 {
 	sem_wait(philo->data->print);
 	printf("%ld %d %s\n", print_time - philo->data->start_t, philo->id, message);
 	sem_post(philo->data->print);
 }
 
-void mssleep(int time_ms)
+void	mssleep(int time_ms)
 {
-	long start;
+	long	start;
 
 	start = get_time();
 	while (get_time() - start < time_ms)

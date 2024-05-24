@@ -6,15 +6,15 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/02 16:25:29 by achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/22 19:53:26 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/24 15:42:25 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-long check_last_meal(t_philo *philo, int update)
+long	check_last_meal(t_philo *philo, int update)
 {
-	long last_meal;
+	long	last_meal;
 
 	last_meal = -1;
 	sem_wait(philo->sem_last_meal);
@@ -26,11 +26,12 @@ long check_last_meal(t_philo *philo, int update)
 	return (last_meal);
 }
 
-static void philosopher(t_philo *philo)
+static void	philosopher(t_philo *philo)
 {
-	pthread_t checker;
-	int one_time = 1;
+	pthread_t	checker;
+	int			one_time;
 
+	one_time = 1;
 	philo->last_meal = -1;
 	creat_sem(&philo->sem_last_meal, "sem_last_meal", 1);
 	if (philo->data->total_ph > 1)
@@ -54,9 +55,9 @@ static void philosopher(t_philo *philo)
 	exit(EXIT_SUCCESS);
 }
 
-static void wait_clean(t_data *data)
+static void	wait_clean(t_data *data)
 {
-	int i;
+	int	i;
 
 	while (waitpid(0, NULL, 0) > 0)
 	{
@@ -68,10 +69,10 @@ static void wait_clean(t_data *data)
 	}
 }
 
-void creat_philos(t_data *data)
+void	creat_philos(t_data *data)
 {
-	int id;
-	int i_pid;
+	int	id;
+	int	i_pid;
 
 	id = 0;
 	data->start_t = get_time();
@@ -94,5 +95,3 @@ void creat_philos(t_data *data)
 		sem_post(data->sem_start);
 	wait_clean(data);
 }
-
-

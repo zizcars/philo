@@ -6,7 +6,7 @@
 /*   By: achakkaf <achakkaf@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 14:01:09 by Achakkaf          #+#    #+#             */
-/*   Updated: 2024/05/20 15:37:55 by achakkaf         ###   ########.fr       */
+/*   Updated: 2024/05/24 15:16:23 by achakkaf         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ft_error(char *error_massege)
 	len = 0;
 	while (error_massege[len])
 		len++;
-	write(STDERR, error_massege, len);
+	write(STDERR_FILENO, error_massege, len);
 }
 
 void	clean_all(t_data *data)

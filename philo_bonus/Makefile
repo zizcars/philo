@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Wextra -Werror# -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror -pthread
 NAME = philo_bonus
 SRC =	main_bonus.c \
 		philo_tooles_bonus.c \
@@ -6,7 +6,6 @@ SRC =	main_bonus.c \
 		thread_managment_bonus.c \
 		routine_bonus.c
  
-GRN = "\033[32m"
 ORG = "\033[34m"
 RED = "\033[31m"
 END = "\033[0m"
@@ -22,7 +21,6 @@ all: $(NAME)
 
 $(NAME): $(OSRC) 
 	@cc $(CFLAGS) $(OSRC) -o $(NAME)
-# @echo $(GRN)DONE$(END)
 
 clean:
 	@echo $(RED)Remove [$(OSRC)$(BOSRC)]$(END)
